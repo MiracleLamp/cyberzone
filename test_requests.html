@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users Management</title>
+</head>
+<body>
+  <h1>Users Management</h1>
+
+  <h2>Filter, Sort, and Paginate</h2>
+  <input type="text" id="filter" placeholder="Filter by Name">
+  <select id="sort">
+    <option value="">No Sorting</option>
+    <option value="name">Sort by Name</option>
+    <option value="email">Sort by Email</option>
+  </select>
+  <input type="number" id="page" placeholder="Page Number" min="1" value="1">
+  <button onclick="fetchUsers()">Fetch Users</button>
+
+  <h2>Users List</h2>
+  <div id="users"></div>
+
+  <h2>Add a User</h2>
+  <input type="text" id="addName" placeholder="Name">
+  <input type="email" id="addEmail" placeholder="Email">
+  <button onclick="addUser()">Add User</button>
+
+  <h2>Delete a User</h2>
+  <input type="number" id="deleteUserId" placeholder="User ID">
+  <button onclick="deleteUser()">Delete User</button>
+
+  <h2>Update a User</h2>
+  <input type="number" id="updateUserId" placeholder="User ID">
+  <input type="text" id="updateName" placeholder="New Name">
+  <input type="email" id="updateEmail" placeholder="New Email">
+  <button onclick="updateUser()">Update User</button>
+
+  <script>
+    const apiUrl = 'http://localhost:8080';
+
+    async function fetchUsers() {
+      const filter = document.getElementById('filter').value;
+      const sort = document.getElementById('sort').value;
+      const page = document.getElementById('page').value || 1;
+
+      const response = await fetch(`${apiUrl}/fst?filter=${filter}&sort=${sort}&page=${page}`);
+      const data = await response.json();
+
+      const usersDiv = document.getElementById('users');
+      usersDiv.innerHTML = ''; // Clear previous results
+
+      // Check if users exist
+      if (data.users && data.users.length > 0) {
+        data.users.forEach(user => {
+          const userDiv = document.createElement('div');
+          userDiv.textContent = `ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`;
+          usersDiv.appendChild(userDiv);
+        });
+      } else {
+        usersDiv.textContent = 'No users found.';
+      }
+    }
+
+    async function addUser() {
+      const name = document.getElementById('addName').value;
+      const email = document.getElementById('addEmail').value;
+
+      const response = await fetch(`${apiUrl}/add-user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email }),
+      });
+
+      const data = await response.json();
+      alert(data.message || 'User added successfully');
+    }
+
+    async function deleteUser() {
+      const id = document.getElementById('deleteUserId').value;
+
+      const response = await fetch(`${apiUrl}/delete-user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await response.json();
+      alert(data.message || 'User deleted successfully');
+    }
+
+    async function updateUser() {
+      const id = document.getElementById('updateUserId').value;
+      const name = document.getElementById('updateName').value;
+      const email = document.getElementById('updateEmail').value;
+
+      const response = await fetch(`${apiUrl}/update-user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: parseInt(id), name, email }),
+      });
+
+      const data = await response.json();
+      alert(data.message || 'User updated successfully');
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VIP Rooms</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, header, nav, a, h5, p, .card-title, .card-text {
+          font-family: 'Orbitron', sans-serif;
+        }
+      </style>
+      
+
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #000000, #ffdd00);
+            color: white;
+          }
+          
+      body {
+        background: linear-gradient(135deg, #000000, #FFD700);
+        color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+        min-height: 100vh;
+      }
+
+      header {
+        background: rgba(0, 0, 0, 0.8);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+        padding: 1rem 0;
+      }
+
+      header a {
+        color: #FFD700;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+
+      header a:hover {
+        color: #ffffff;
+      }
+
+      .album {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      .card img {
+        border-radius: 8px 8px 0 0;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .card-title {
+        color: #FFD700;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .card-text {
+        color: #ffffff;
+      }
+
+      .btn-outline-secondary {
+        border-color: #FFD700;
+        color: #FFD700;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .btn-outline-secondary:hover {
+        background-color: #FFD700;
+        color: #000000;
+      }
+
+      .text-muted {
+        color: #FFD700 !important;
+      }
+    </style>
+  </head>
+  <body>
+
+    <header class="py-3">
+      <div class="container d-flex justify-content-between align-items-center">
+        <a href="#" class="text-decoration-none">
+          <span class="fs-4">VIP ROOMS</span>
+        </a>
+        <nav class="d-flex gap-3">
+          <a href="main.html" class="text-decoration-none">Home</a>
+          <a href="prices.html" class="text-decoration-none">Price</a>
+          <a href="devices.html" class="text-decoration-none">Devices</a>
+          <a href="contact.html" class="text-decoration-none">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="album py-5">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <div class="col">
+            <div class="card">
+              <img src="./stream.jpeg" alt="Streaming Room">
+              <div class="card-body">
+                <h5 class="card-title">Streaming</h5>
+                <p class="card-text">STREAMING ROOM - VIP room containing the best equipment and comfortable conditions for your gaming🧑🏻‍💻</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Buy Now</button>
+                  <small class="text-muted">$120.00</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card">
+              <img src="./smoke.png" alt="Smoking Room">
+              <div class="card-body">
+                <h5 class="card-title">Smoking</h5>
+                <p class="card-text">Want to have a smoke during a sweaty skating session? Welcome to the "Smoking Room" 🚬 🔥</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Buy Now</button>
+                  <small class="text-muted">$150.00</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card">
+              <img src="./pabg.png" alt="PUBG Room">
+              <div class="card-body">
+                <h5 class="card-title">PUBG</h5>
+                <p class="card-text">PUBG room offers high-speed devices for a pleasant gaming experience🧑🏻‍💻</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Buy Now</button>
+                  <small class="text-muted">$435.00</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card">
+              <img src="./prim.png" alt="Premier Room">
+              <div class="card-body">
+                <h5 class="card-title">Premier</h5>
+                <p class="card-text">Welcome to the "Premier Room," equipped with the most powerful wireless devices🔥</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Buy Now</button>
+                  <small class="text-muted">$700.00</small>
+                </div><br><br><br>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><br><br>
+
+
+
+
+    <div class="container">
+      <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-4 mb-0 text-body-secondary">&copy; 2024 Company, Inc</p>
+    
+        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        </a>
+    
+        <ul class="nav col-md-4 justify-content-end">
+          <li class="nav-item"><a href="https://www.instagram.com/brothers_astana/" class="nav-link px-2 text-body-secondary">Instagram</a></li>
+          <li class="nav-item"><a href="https://www.tiktok.com/@brothers_astana01?_t=8sDlm00mjYM&_r=1" class="nav-link px-2 text-body-secondary">TikTok</a></li>
+          <li class="nav-item"><a href="https://2gis.kz/astana/search/Brothers%2C%20компьютерный%20клуб/firm/70000001037713195/71.442558%2C51.094322" class="nav-link px-2 text-body-secondary">2Gis</a></li>
+        </ul>
+      </footer>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
