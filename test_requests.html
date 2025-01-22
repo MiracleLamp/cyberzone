@@ -3,107 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Users Management</title>
+  <title>Send Email with Attachment</title>
 </head>
 <body>
-  <h1>Users Management</h1>
-
-  <h2>Filter, Sort, and Paginate</h2>
-  <input type="text" id="filter" placeholder="Filter by Name">
-  <select id="sort">
-    <option value="">No Sorting</option>
-    <option value="name">Sort by Name</option>
-    <option value="email">Sort by Email</option>
-  </select>
-  <input type="number" id="page" placeholder="Page Number" min="1" value="1">
-  <button onclick="fetchUsers()">Fetch Users</button>
+  <h1>Send Email with Inline Image</h1>
+  <label for="subject">Subject:</label>
+  <textarea id="subject" placeholder="Subject"></textarea><br>
+  <label for="body">Email Body:</label>
+  <textarea id="body" placeholder="Email Body"></textarea><br>
+  <label for="image">Attach Image:</label>
+  <input type="file" id="image" name="file"><br>
+  <label for="recipients">Recipients (comma-separated):</label>
+  <input type="text" id="recipients" placeholder="Recipients (comma-separated)"><br>
+  <button onclick="sendEmail()">Send Email</button>
 
   <h2>Users List</h2>
   <div id="users"></div>
 
   <h2>Add a User</h2>
-  <input type="text" id="addName" placeholder="Name">
-  <input type="email" id="addEmail" placeholder="Email">
+  <label for="addName">Name:</label>
+  <input type="text" id="addName" placeholder="Name"><br>
+  <label for="addEmail">Email:</label>
+  <input type="email" id="addEmail" placeholder="Email"><br>
   <button onclick="addUser()">Add User</button>
 
   <h2>Delete a User</h2>
-  <input type="number" id="deleteUserId" placeholder="User ID">
+  <label for="deleteUserId">User ID:</label>
+  <input type="number" id="deleteUserId" placeholder="User ID"><br>
   <button onclick="deleteUser()">Delete User</button>
 
   <h2>Update a User</h2>
-  <input type="number" id="updateUserId" placeholder="User ID">
-  <input type="text" id="updateName" placeholder="New Name">
-  <input type="email" id="updateEmail" placeholder="New Email">
+  <label for="updateUserId">User ID:</label>
+  <input type="number" id="updateUserId" placeholder="User ID"><br>
+  <label for="updateName">New Name:</label>
+  <input type="text" id="updateName" placeholder="New Name"><br>
+  <label for="updateEmail">New Email:</label>
+  <input type="email" id="updateEmail" placeholder="New Email"><br>
   <button onclick="updateUser()">Update User</button>
 
+  <h2>Get User by ID</h2>
+  <label for="getUserId">User ID:</label>
+  <input type="number" id="getUserId" placeholder="User ID"><br>
+  <button onclick="getUserById()">Get User</button>
+
   <script>
-    const apiUrl = 'http://localhost:8080';
+      async function sendEmail() {
+          const subject = document.getElementById("subject").value;
+          const body = document.getElementById("body").value;
+          const recipients = document.getElementById("recipients").value.split(",");
+          const image = document.getElementById("image").files[0];
 
-    async function fetchUsers() {
-      const filter = document.getElementById('filter').value;
-      const sort = document.getElementById('sort').value;
-      const page = document.getElementById('page').value || 1;
+          const formData = new FormData();
+          if (image) {
+              formData.append("file", image);
+          }
+          formData.append("subject", subject);
+          formData.append("body", body);
+          formData.append("recipients", JSON.stringify(recipients));
 
-      const response = await fetch(`${apiUrl}/fst?filter=${filter}&sort=${sort}&page=${page}`);
-      const data = await response.json();
+          try {
+              const response = await fetch("http://localhost:8080/send-notification", {
+                  method: "POST",
+                  body: formData,
+              });
 
-      const usersDiv = document.getElementById('users');
-      usersDiv.innerHTML = ''; // Clear previous results
+              if (!response.ok) {
+                  const error = await response.json();
+                  alert(`Error: ${error.error}`);
+                  return;
+              }
 
-      // Check if users exist
-      if (data.users && data.users.length > 0) {
-        data.users.forEach(user => {
-          const userDiv = document.createElement('div');
-          userDiv.textContent = `ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`;
-          usersDiv.appendChild(userDiv);
-        });
-      } else {
-        usersDiv.textContent = 'No users found.';
+              const result = await response.json();
+              alert(result.message || "Emails sent successfully");
+          } catch (error) {
+              console.error("Error sending email:", error);
+              alert("Failed to send email due to an unexpected error.");
+          }
       }
-    }
 
-    async function addUser() {
-      const name = document.getElementById('addName').value;
-      const email = document.getElementById('addEmail').value;
+      async function addUser() {
+        const name = document.getElementById('addName').value;
+        const email = document.getElementById('addEmail').value;
 
-      const response = await fetch(`${apiUrl}/add-user`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email }),
-      });
+        try {
+            const response = await fetch("http://localhost:8080/add-user", {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email }),
+            });
 
-      const data = await response.json();
-      alert(data.message || 'User added successfully');
-    }
+            const data = await response.json();
 
-    async function deleteUser() {
-      const id = document.getElementById('deleteUserId').value;
+            if (!response.ok) {
+                alert(`Error: ${data.error}`);
+                return;
+            }
 
-      const response = await fetch(`${apiUrl}/delete-user`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
+            alert(data.message || 'User added successfully');
+        } catch (error) {
+            console.error("Error adding user:", error);
+            alert("Failed to add user due to an unexpected error.");
+        }
+      }
 
-      const data = await response.json();
-      alert(data.message || 'User deleted successfully');
-    }
+      async function deleteUser() {
+        const id = document.getElementById('deleteUserId').value;
 
-    async function updateUser() {
-      const id = document.getElementById('updateUserId').value;
-      const name = document.getElementById('updateName').value;
-      const email = document.getElementById('updateEmail').value;
+        try {
+            const response = await fetch("http://localhost:8080/delete-user", {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: parseInt(id) }),
+            });
 
-      const response = await fetch(`${apiUrl}/update-user`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: parseInt(id), name, email }),
-      });
+            const data = await response.json();
 
-      const data = await response.json();
-      alert(data.message || 'User updated successfully');
-    }
+            if (!response.ok) {
+                alert(`Error: ${data.error}`);
+                return;
+            }
+
+            alert(data.message || 'User deleted successfully');
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("Failed to delete user due to an unexpected error.");
+        }
+      }
+
+      async function updateUser() {
+        const id = document.getElementById('updateUserId').value;
+        const name = document.getElementById('updateName').value;
+        const email = document.getElementById('updateEmail').value;
+
+        try {
+            const response = await fetch("http://localhost:8080/update-user", {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: parseInt(id), name, email }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(`Error: ${data.error}`);
+                return;
+            }
+
+            alert(data.message || 'User updated successfully');
+        } catch (error) {
+            console.error("Error updating user:", error);
+            alert("Failed to update user due to an unexpected error.");
+        }
+      }
+
+      async function getUserById() {
+        const id = document.getElementById('getUserId').value;
+
+        try {
+            const response = await fetch(`http://localhost:8080/get-user?id=${id}`);
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(`Error: ${data.error}`);
+                return;
+            }
+
+            const usersDiv = document.getElementById('users');
+            usersDiv.innerHTML = ''; // Clear previous results
+
+            if (data.user) {
+              const userDiv = document.createElement('div');
+              userDiv.textContent = `ID: ${data.user.id}, Name: ${data.user.name}, Email: ${data.user.email}`;
+              usersDiv.appendChild(userDiv);
+            } else {
+              usersDiv.textContent = 'User not found.';
+            }
+        } catch (error) {
+            console.error("Error fetching user:", error);
+            alert("Failed to fetch user due to an unexpected error.");
+        }
+      }
   </script>
-
 </body>
 </html>

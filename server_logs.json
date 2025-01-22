@@ -1,0 +1,155 @@
+{"action":"initDatabase","level":"info","msg":"Database initialized successfully","time":"2025-01-08T17:51:28+05:00"}
+{"action":"startServer","level":"info","msg":"Server started on port 8080","time":"2025-01-08T17:51:28+05:00"}
+{"action":"sortUsers","level":"info","msg":"Sorting users","sort":"name","time":"2025-01-08T17:51:52+05:00"}
+{"action":"fetchUsers","count":6,"level":"info","msg":"Users fetched successfully","status":"success","time":"2025-01-08T17:51:52+05:00"}
+{"action":"sortUsers","level":"info","msg":"Sorting users","sort":"name","time":"2025-01-08T17:52:11+05:00"}
+{"action":"fetchUsers","count":6,"level":"info","msg":"Users fetched successfully","status":"success","time":"2025-01-08T17:52:11+05:00"}
+{"action":"initDatabase","level":"info","msg":"Database initialized successfully","time":"2025-01-08T17:52:56+05:00"}
+{"action":"startServer","level":"info","msg":"Server started on port 8080","time":"2025-01-08T17:52:56+05:00"}
+{"action":"sortUsers","level":"info","msg":"Sorting users","sort":"name","time":"2025-01-08T17:53:07+05:00"}
+{"action":"fetchUsers","count":6,"level":"info","msg":"Users fetched successfully","status":"success","time":"2025-01-08T17:53:07+05:00"}
+{"action":"sortUsers","level":"info","msg":"Sorting users","sort":"email","time":"2025-01-08T17:53:09+05:00"}
+{"action":"fetchUsers","count":6,"level":"info","msg":"Users fetched successfully","status":"success","time":"2025-01-08T17:53:09+05:00"}
+{"action":"paginateUsers","level":"info","limit":2,"msg":"Paginating users","page":"2","time":"2025-01-08T17:55:51+05:00"}
+{"action":"fetchUsers","count":2,"level":"info","msg":"Users fetched successfully","status":"success","time":"2025-01-08T17:55:51+05:00"}
+{"action":"initDatabase","level":"info","msg":"Database initialized successfully","time":"2025-01-08T18:16:40+05:00"}
+{"action":"startServer","level":"info","msg":"Server started on port 8080","time":"2025-01-08T18:16:40+05:00"}
+{"action":"sendEmail","error":"Invalid input","level":"error","msg":"Failed to decode email request","status":"failed","time":"2025-01-08T18:16:47+05:00"}
+{"action":"sendEmail","level":"info","msg":"Emails sent successfully","time":"2025-01-08T18:16:59+05:00"}
+{"action":"initDatabase","level":"info","msg":"Database initialized successfully","time":"2025-01-08T18:46:06+05:00"}
+{"action":"startServer","level":"info","msg":"Server started on port 8080","time":"2025-01-08T18:46:06+05:00"}
+{"action":"initDatabase","level":"info","msg":"Database initialized successfully","time":"2025-01-08T18:48:22+05:00"}
+{"action":"startServer","level":"info","msg":"Server started on port 8080","time":"2025-01-08T18:48:22+05:00"}
+{"action":"sendEmail","error":"dial tcp: lookup smtp.example.com: no such host","level":"error","msg":"Failed to send email","recipient":"","status":"failed","time":"2025-01-08T18:50:16+05:00"}
+{"action":"sendEmail","error":"dial tcp: lookup smtp.example.com: no such host","level":"error","msg":"Failed to send email","recipient":"","status":"failed","time":"2025-01-08T18:51:03+05:00"}
+{"action":"sendEmail","error":"dial tcp: lookup smtp.example.com: no such host","level":"error","msg":"Failed to send email","recipient":"you","status":"failed","time":"2025-01-08T18:51:38+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T18:57:40+05:00"}
+{"action":"sendEmail","error":"dial tcp: lookup smtp.example.com: no such host","level":"error","msg":"Failed to send email","recipient":"you","status":"failed","time":"2025-01-08T18:58:12+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:16:29+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:19:48+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:27:03+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:27:03+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:29:35+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:29:35+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"\": mail: no address","level":"error","msg":"Failed to send email","recipient":"","time":"2025-01-08T19:30:36+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:30:38+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:38+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:39+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:30:40+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:40+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:40+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:40+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:30:41+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:41+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:42+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:30:42+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:30:52+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:30:52+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:31:42+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:31:42+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:31:42+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:31:43+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:31:43+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:31:44+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:31:45+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:33:43+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:33:43+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:20+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"you\": mail: missing '@' or angle-addr","level":"error","msg":"Failed to send email","recipient":"you","time":"2025-01-08T19:34:20+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:20+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:27+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:27+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:28+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:28+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:28+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:29+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:29+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:34:29+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:34:29+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:34:30+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:34:32+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:34:50+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:35:15+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:35:18+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:35:18+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:35:19+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:35:19+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:35:19+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T19:35:19+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:35:20+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:35:21+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:35:23+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:37:02+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:37:02+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:37:45+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:37:45+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:38:01+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:41:46+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:43:47+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:51:52+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:51:52+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"\": mail: no address","level":"error","msg":"Failed to send email","recipient":"","time":"2025-01-08T19:52:54+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:53:11+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:53:36+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:54:24+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:55:41+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:55:41+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T19:56:24+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T19:59:03+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T19:59:03+05:00"}
+{"error":"gomail: could not send email 1: gomail: invalid address \"\": mail: no address","level":"error","msg":"Failed to send email","recipient":"","time":"2025-01-08T20:00:05+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:00:44+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:00:44+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T20:01:33+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:03:59+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:03:59+05:00"}
+{"level":"info","msg":"Emails sent successfully","time":"2025-01-08T20:04:32+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:06:52+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:06:52+05:00"}
+{"error":"gomail: could not send email 1: open /path/to/uploaded/image: no such file or directory","level":"error","msg":"Failed to send email","recipient":"231645@astanait.edu.kz","time":"2025-01-08T20:07:29+05:00"}
+{"error":"gomail: could not send email 1: open /path/to/uploaded/image: no such file or directory","level":"error","msg":"Failed to send email","recipient":"231645@astanait.edu.kz","time":"2025-01-08T20:07:35+05:00"}
+{"action":"rateLimit","level":"warning","message":"Rate limit exceeded","msg":"Too many requests","status":"failed","time":"2025-01-08T20:07:37+05:00"}
+{"error":"gomail: could not send email 1: open /path/to/uploaded/image: no such file or directory","level":"error","msg":"Failed to send email","recipient":"231645@astanait.edu.kz","time":"2025-01-08T20:07:38+05:00"}
+{"error":"gomail: could not send email 1: open /path/to/uploaded/image: no such file or directory","level":"error","msg":"Failed to send email","recipient":"231645@astanait.edu.kz","time":"2025-01-08T20:12:40+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:24:21+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:24:21+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:25:13+05:00"}
+{"error":"http: no such file","level":"error","msg":"Failed to extract file from form","time":"2025-01-08T20:25:21+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:25:46+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:26:45+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:29:52+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:29:52+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:30:08+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:30:21+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:31:34+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:32:04+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:32:04+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:32:23+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:34:41+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:34:41+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:34:58+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-08T20:41:45+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-08T20:41:45+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-08T20:41:57+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-09T18:39:49+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-09T18:39:49+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-09T18:40:18+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-09T18:41:17+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-09T18:41:18+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-09T18:41:19+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-09T18:42:12+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-09T18:42:12+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-09T18:42:30+05:00"}
+{"error":"EOF","level":"error","msg":"Failed to parse email request","time":"2025-01-09T18:42:38+05:00"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-22T16:57:54+05:00"}
+{"level":"info","msg":"Server started on port 8080","time":"2025-01-22T16:57:54+05:00"}
+{"error":"request Content-Type isn't multipart/form-data","level":"error","msg":"Failed to parse form","time":"2025-01-22T16:58:29+05:00"}
+2025/01/23 02:14:50 Database initialized successfully
+2025/01/23 02:14:50 Server running on http://localhost:8080
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T02:19:33+0500"}
+{"level":"info","msg":"Server started on http://localhost:8080","time":"2025-01-23T02:19:33+0500"}
+{"level":"info","msg":"Executing query: SELECT id, name, email FROM users WHERE name LIKE '%Nabi%' LIMIT 10 OFFSET 0","time":"2025-01-23T02:19:44+0500"}
+{"level":"info","msg":"Data retrieved successfully","time":"2025-01-23T02:19:44+0500"}
+{"level":"info","msg":"Executing query: SELECT id, name, email FROM users ORDER BY id LIMIT 10 OFFSET 0","time":"2025-01-23T02:20:08+0500"}
+{"level":"info","msg":"Data retrieved successfully","time":"2025-01-23T02:20:08+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T02:22:20+0500"}

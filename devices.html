@@ -15,22 +15,45 @@
             font-family: 'Arial', sans-serif;
         }
 
-        nav {
-            background-color: #000;
-            padding: 10px 0;
-        }
+        header {
+        background: rgba(0, 0, 0, 0.8);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+        margin: 5px;
+      }
 
-        nav a {
-            color: #f0f0f0;
-            margin-right: 15px;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: color 0.3s ease-in-out;
-        }
+      header a {
+        color: #FFD700;
+        transition: color 0.3s;
+      }
 
-        nav a:hover {
-            color: #FFD700;
-        }
+      header a:hover {
+        color: #ffffff;
+      }
+
+      header .btn-primary {
+        background-color: #FFD700;
+        border: none;
+        color: #000;
+      }
+
+      header .btn-primary:hover {
+        background-color: #e6c200;
+      }
+
+      header .btn-outline-primary {
+        border-color: #FFD700;
+        color: #FFD700;
+      }
+
+      header .btn-outline-primary:hover {
+        background-color: #FFD700;
+        color: #000;
+      }
+
+      nav a {
+        font-weight: bold;
+        margin-left: 20px;
+      }
 
         h1 {
             text-align: center;
@@ -97,20 +120,26 @@
 <body>
 
     <!-- Навигация -->
-    <nav class="text-center">
-        <a href="main.html">Home</a>
-        <a href="prices.html">Price</a>
-        <a href="vip.html">VIP Rooms</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-
+    <header class="py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+          <a href="#" class="text-decoration-none">
+            <span class="fs-4">VIP ROOMS</span>
+          </a>
+          <nav class="d-flex gap-3">
+            <a href="main.html" class="text-decoration-none">Home</a>
+            <a href="prices.html" class="text-decoration-none">Price</a>
+            <a href="devices.html" class="text-decoration-none">Devices</a>
+            <a href="contact.html" class="text-decoration-none">Contact</a>
+          </nav>
+        </div>
+      </header>
     <!-- Заголовок -->
     <h1>Devices of HYPERX I & II</h1>
 
     <!-- Список устройств -->
     <div class="container">
         <div class="device">
-            <img src="./hp1.png" alt="HYPERX I">
+            <img src="./photos/hp1.png" alt="HYPERX I">
             <div>
                 <h2>HYPERX I</h2>
                 <p>
@@ -126,7 +155,7 @@
         </div>
 
         <div class="device">
-            <img src="./hp2.png" alt="HYPERX II">
+            <img src="./photos/hp2.png" alt="HYPERX II">
             <div>
                 <h2>HYPERX II</h2>
                 <p>
@@ -142,7 +171,7 @@
         </div>
 
         <div class="device">
-            <img src="./pubg8.png" alt="PUBG">
+            <img src="./photos/pubg8.png" alt="PUBG">
             <div>
                 <h2>PUBG</h2>
                 <p>
@@ -158,7 +187,7 @@
         </div>
 
         <div class="device">
-            <img src="./prem5.png" alt="PREMIER">
+            <img src="./photos/prem5.png" alt="PREMIER">
             <div>
                 <h2>PREMIER</h2>
                 <p>
@@ -174,7 +203,7 @@
         </div>
 
         <div class="device">
-            <img src="./smok3.png" alt="SMOKING">
+            <img src="./photos/smok3.png" alt="SMOKING">
             <div>
                 <h2>SMOKING</h2>
                 <p>
@@ -190,7 +219,7 @@
         </div>
 
         <div class="device">
-            <img src="./str1.png" alt="STREAMING">
+            <img src="./photos/str1.png" alt="STREAMING">
             <div>
                 <h2>STREAMING</h2>
                 <p>

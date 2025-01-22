@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: radial-gradient(circle, #000000, #1a1a1a);
+      color: #FFD700;
+      font-family: 'Orbitron', sans-serif;
+      min-height: 100vh;
+    }
+    header {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px 20px;
+      box-shadow: 0 0 10px #FFD700;
+    }
+    header h1 {
+      font-size: 2rem;
+      color: #FFD700;
+    }
+    .card {
+      background: rgba(30, 30, 30, 0.95);
+      border: 1px solid #FFD700;
+      color: #FFD700;
+      box-shadow: 0 0 10px #FFD700;
+      border-radius: 10px;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #FFD700, #FF4500);
+      border: none;
+      font-weight: bold;
+      transition: transform 0.3s;
+    }
+    .btn-primary:hover {
+      transform: scale(1.1);
+      background: linear-gradient(45deg, #FF4500, #FFD700);
+    }
+  </style>
+</head>
+<body>
+  <header class="d-flex justify-content-between align-items-center">
+    <h1>Admin Dashboard</h1>
+    <a href="logout.html" class="btn btn-danger">Logout</a>
+  </header>
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card text-center p-3">
+          <h3>Manage Devices</h3>
+          <p>Add, edit, and delete available devices.</p>
+          <a href="manage-devices.html" class="btn btn-primary">Go to Devices</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card text-center p-3">
+          <h3>Manage Users</h3>
+          <p>View and manage registered users.</p>
+          <a href="manage-users.html" class="btn btn-primary">Go to Users</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card text-center p-3">
+          <h3>View Bookings</h3>
+          <p>Monitor and manage room bookings.</p>
+          <a href="manage-bookings.html" class="btn btn-primary">Go to Bookings</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
