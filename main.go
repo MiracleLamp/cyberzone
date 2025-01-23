@@ -23,10 +23,13 @@ type LogEntry struct {
 }
 
 type User struct {
-	ID    uint   `json:"id" gorm:"primaryKey"`
-	Name  string `json:"name"`
-	Email string `json:"email" gorm:"unique"`
+	ID       uint   `gorm:"primaryKey" json:"id"`
+	Name     string `json:"name"`
+	Email    string `gorm:"unique" json:"email"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
 }
+
 
 var (
 	db      *gorm.DB
@@ -245,16 +248,16 @@ func main() {
 	mux.HandleFunc("/update-user", updateUserHandler)
 	mux.HandleFunc("/delete-user", deleteUserHandler)
 	mux.HandleFunc("/filter-sort-paginate", filterSortPaginateHandler)
+	mux.HandleFunc("/signup", signUpHandler)
+	mux.HandleFunc("/login", loginHandler)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type"},
-		AllowCredentials: true,
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	})
 
 	handler := rateLimitMiddleware(c.Handler(mux))
-
 	fmt.Println("server running on http://localhost:8080")
 	http.ListenAndServe(":8080", handler)
 }

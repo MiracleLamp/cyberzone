@@ -96,17 +96,17 @@
           <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
         </div>
         <div class="mb-3">
-            <label for="confirm-password" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password" required>
-          </div>
+          <label for="confirm-password" class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password" required>
+        </div>
         <div class="mb-3">
           <label for="role" class="form-label">Choose Your Role</label>
           <div>
-            <input type="radio" id="user" name="role" value="user" required>
+            <input type="radio" id="user" name="role" value="User" required>
             <label for="user">User</label>
           </div>
           <div>
-            <input type="radio" id="admin" name="role" value="admin" required>
+            <input type="radio" id="admin" name="role" value="Admin" required>
             <label for="admin">Admin</label>
           </div>
         </div>
@@ -120,26 +120,40 @@
     <script>
       document.getElementById("signup-form").addEventListener("submit", async function (event) {
         event.preventDefault();
-
+    
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
         const role = document.querySelector('input[name="role"]:checked').value;
-
-        const response = await fetch("http://localhost:8080/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password, role }),
-        });
-
-        if (response.ok) {
-          alert("Sign up successful! Redirecting to login...");
-          window.location.href = "login.html";
-        } else {
-          const error = await response.json();
-          alert(`Error: ${error.message}`);
+    
+        if (password !== confirmPassword) {
+          alert("Passwords do not match!");
+          return;
+        }
+    
+        try {
+          const response = await fetch("http://localhost:8080/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Name: name, Email: email, Password: password, Role: role }),
+          });
+    
+          const data = await response.json();
+    
+          if (response.status === 409) {
+            alert(data.error);
+          } else if (response.ok) {
+            window.location.href = "login.html"; 
+            alert("Sign up successful!");
+          } else {
+            alert(data.error || "An error occurred.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Something went wrong. Please try again later.");
         }
       });
-    </script>
+    </script>    
   </body>
 </html>

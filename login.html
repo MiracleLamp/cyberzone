@@ -82,7 +82,7 @@
   <body>
     <div class="login-form">
       <h1>Login</h1>
-      <form>
+      <form id="login-form">
         <div class="mb-3">
           <label for="email" class="form-label">Email Address</label>
           <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
@@ -97,5 +97,37 @@
         </div>
       </form>
     </div>
+
+    <script>
+      document.getElementById("login-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch("http://localhost:8080/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            if (data.role === "Admin") {
+              window.location.href = "admin.html";
+            } else if (data.role === "User") {
+              window.location.href = "user.html";
+            }
+          } else {
+            alert(data.error || "An error occurred.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Something went wrong. Please try again later.");
+        }
+      });
+    </script>
   </body>
 </html>

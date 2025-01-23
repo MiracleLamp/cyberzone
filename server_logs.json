@@ -153,3 +153,135 @@
 {"level":"info","msg":"Executing query: SELECT id, name, email FROM users ORDER BY id LIMIT 10 OFFSET 0","time":"2025-01-23T02:20:08+0500"}
 {"level":"info","msg":"Data retrieved successfully","time":"2025-01-23T02:20:08+0500"}
 {"level":"info","msg":"Database initialized successfully","time":"2025-01-23T02:22:20+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T03:03:10+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T03:06:24+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T03:20:31+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:21:59+0500"}
+{"level":"error","msg":"Failed to create user during Sign Up","time":"2025-01-23T03:21:59+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:22:07+0500"}
+{"level":"error","msg":"Failed to create user during Sign Up","time":"2025-01-23T03:22:07+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:22:20+0500"}
+{"level":"error","msg":"Failed to create user during Sign Up","time":"2025-01-23T03:22:20+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:22:47+0500"}
+{"level":"info","msg":"User signed up successfully: {25 RNN jne@gmail.com}","time":"2025-01-23T03:22:47+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:23:11+0500"}
+{"level":"info","msg":"User logged in successfully: {25 RNN jne@gmail.com}","time":"2025-01-23T03:23:11+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:23:21+0500"}
+{"level":"info","msg":"User logged in successfully: {25 RNN jne@gmail.com}","time":"2025-01-23T03:23:21+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T03:48:09+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:49:40+0500"}
+{"level":"error","msg":"Missing required fields in Sign Up","time":"2025-01-23T03:49:40+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:49:58+0500"}
+{"level":"info","msg":"User signed up successfully: {26 Nabi nabibi@gmail.com 12345 Admin}","time":"2025-01-23T03:49:58+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-23T03:50:24+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-23T03:50:51+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-23T03:50:55+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:54:11+0500"}
+{"level":"error","msg":"Missing required fields in Sign Up","time":"2025-01-23T03:54:11+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:54:20+0500"}
+{"level":"error","msg":"Missing required fields in Sign Up","time":"2025-01-23T03:54:20+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:54:27+0500"}
+{"level":"error","msg":"Invalid role in Sign Up","time":"2025-01-23T03:54:27+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:54:34+0500"}
+{"level":"info","msg":"User signed up successfully: {27 Nabi j@example.com password123 User}","time":"2025-01-23T03:54:34+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:55:46+0500"}
+{"level":"info","msg":"User logged in successfully: {27 Nabi j@example.com password123 User}","time":"2025-01-23T03:55:46+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:55:50+0500"}
+{"level":"info","msg":"User logged in successfully: {27 Nabi j@example.com password123 User}","time":"2025-01-23T03:55:50+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T03:57:04+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:57:08+0500"}
+{"level":"error","msg":"Invalid password during Login","time":"2025-01-23T03:57:08+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:57:13+0500"}
+{"level":"info","msg":"User logged in successfully: {27 Nabi j@example.com password123 User}","time":"2025-01-23T03:57:13+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T03:57:24+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-23T03:57:24+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T03:59:55+0500"}
+{"level":"error","msg":"Failed to create user during Sign Up","time":"2025-01-23T03:59:55+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T04:00:06+0500"}
+{"level":"info","msg":"User signed up successfully: {29 Nabib n@example.com password123 User}","time":"2025-01-23T04:00:06+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T04:00:11+0500"}
+{"level":"error","msg":"Failed to create user during Sign Up","time":"2025-01-23T04:00:11+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T04:03:18+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T04:03:21+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T04:03:21+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T04:03:46+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-23T04:03:46+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T04:07:57+0500"}
+{"level":"error","msg":"Missing required fields in Sign Up","time":"2025-01-23T04:07:57+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T04:13:34+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T04:13:37+0500"}
+{"level":"error","msg":"Invalid input for Sign Up","time":"2025-01-23T04:13:37+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T04:13:40+0500"}
+{"level":"error","msg":"Invalid input for Sign Up","time":"2025-01-23T04:13:40+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:17:42+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T15:18:04+0500"}
+{"level":"info","msg":"User signed up successfully: {31 Hayat hayaty@gmail.com 1234 User}","time":"2025-01-23T15:18:04+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:19:58+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T15:20:31+0500"}
+{"level":"info","msg":"User signed up successfully: {32 Dilyara dilya@gmail.com dilya123 User}","time":"2025-01-23T15:20:31+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:22:37+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T15:23:14+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T15:23:14+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T15:23:39+0500"}
+{"level":"info","msg":"User signed up successfully: {33 Nabi nabibibi@gmail.com nabi User}","time":"2025-01-23T15:23:39+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:26:44+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T15:27:12+0500"}
+{"level":"info","msg":"User signed up successfully: {34 asd asd@gmail.com 123456 User}","time":"2025-01-23T15:27:12+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:30:01+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:30:29+0500"}
+{"level":"info","msg":"User logged in successfully: {26 Nabi nabibi@gmail.com 12345 Admin}","time":"2025-01-23T15:30:29+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:30:54+0500"}
+{"level":"info","msg":"User logged in successfully: {26 Nabi nabibi@gmail.com 12345 Admin}","time":"2025-01-23T15:30:54+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:31:44+0500"}
+{"level":"error","msg":"Invalid password during Login","time":"2025-01-23T15:31:44+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:31:50+0500"}
+{"level":"error","msg":"Invalid password during Login","time":"2025-01-23T15:31:50+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:34:54+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:35:22+0500"}
+{"level":"info","msg":"User logged in successfully: {26 Nabi nabibi@gmail.com 12345 Admin}","time":"2025-01-23T15:35:22+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T15:36:06+0500"}
+{"level":"info","msg":"User signed up successfully: {35 Dilyara1 dilyara123@gmail.com dilya123 Admin}","time":"2025-01-23T15:36:06+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:36:39+0500"}
+{"level":"error","msg":"Invalid password during Login","time":"2025-01-23T15:36:39+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:36:48+0500"}
+{"level":"error","msg":"Invalid password during Login","time":"2025-01-23T15:36:48+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T15:38:43+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T15:38:57+0500"}
+{"level":"info","msg":"User logged in successfully: {35 Dilyara1 dilyara123@gmail.com dilya123 Admin}","time":"2025-01-23T15:38:57+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:16:00+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:16:24+0500"}
+{"level":"info","msg":"User signed up successfully: {36 jnj jdfg@gmail.con vvv User}","time":"2025-01-23T16:16:24+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:18:35+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:18:47+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:18:47+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:19:07+0500"}
+{"level":"info","msg":"User signed up successfully: {37 idigjd dfoso@gmail.com fff User}","time":"2025-01-23T16:19:07+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:19:48+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:20:03+0500"}
+{"level":"info","msg":"User signed up successfully: {38 uguooi hbvhvh@gmail.com qqq User}","time":"2025-01-23T16:20:03+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:20:26+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:20:40+0500"}
+{"level":"info","msg":"User signed up successfully: {39 uhuo kkjjj@gmail.com fff User}","time":"2025-01-23T16:20:40+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:21:32+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:21:32+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:21:51+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:21:51+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:24:05+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:24:22+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:24:22+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:25:02+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:25:02+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:29:18+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:29:39+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:29:39+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:30:14+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T16:30:25+0500"}
+{"level":"info","msg":"User logged in successfully: {35 Dilyara1 dilyara123@gmail.com dilya123 Admin}","time":"2025-01-23T16:30:25+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:30:58+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T16:31:04+0500"}
+{"level":"error","msg":"Invalid password during Login","time":"2025-01-23T16:31:04+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-23T16:31:57+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-23T16:31:57+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:33:22+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:33:32+0500"}
+{"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:33:32+0500"}
