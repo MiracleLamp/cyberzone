@@ -1,263 +1,629 @@
-package main
+// package main
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"strconv"
-	"time"
+// import (
+// 	"encoding/json"
+// 	"fmt"
+// 	"log"
+// 	"net/http"
+// 	"os"
+// 	"strconv"
+// 	"time"
 
-	"github.com/rs/cors"
-	"golang.org/x/time/rate"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-)
+// 	"github.com/rs/cors"
+// 	"golang.org/x/time/rate"
+// 	"gorm.io/driver/postgres"
+// 	"gorm.io/gorm"
+// 	"gorm.io/gorm/logger"
+// 	"github.com/joho/godotenv"
+// )
 
-type LogEntry struct {
-	Level   string `json:"level"`
-	Message string `json:"msg"`
-	Time    string `json:"time"`
-}
+// type LogEntry struct {
+// 	Level   string `json:"level"`
+// 	Message string `json:"msg"`
+// 	Time    string `json:"time"`
+// }
 
-type User struct {
-	ID       uint   `gorm:"primaryKey" json:"id"`
-	Name     string `json:"name"`
-	Email    string `gorm:"unique" json:"email"`
-	Password string `json:"password"`
-	Role     string `json:"role"`
-}
+// type User struct {
+// 	ID        uint   `gorm:"primaryKey"`
+// 	Name      string
+// 	Email     string `gorm:"unique"`
+// 	Password  string
+// 	Role      string
+// 	Verified  bool   `gorm:"default:false"` 
+// }
 
+// type TempUser struct {
+// 	ID       uint   `gorm:"primaryKey"`
+// 	Name     string
+// 	Email    string `gorm:"unique"`
+// 	Password string
+	
+// }
 
-var (
-	db      *gorm.DB
-	limiter = rate.NewLimiter(1, 3) // Rate limit of 1 request per second with a burst of 3 requests
-	logFile *os.File
-)
+// var (
+// 	db      *gorm.DB
+// 	limiter = rate.NewLimiter(1, 3) // Rate limit of 1 request per second with a burst of 3 requests
+// 	logFile *os.File
+// )
 
-func initLogFile() {
-	var err error
-	logFile, err = os.OpenFile("server_logs.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
-	}
-	log.SetOutput(logFile)
-}
+// func initLogFile() {
+// 	var err error
+// 	logFile, err = os.OpenFile("server_logs.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+// 	if err != nil {
+// 		log.Fatalf("Failed to open log file: %v", err)
+// 	}
+// 	log.SetOutput(logFile)
+// }
 
-func writeLog(level, message string) {
-	logEntry := LogEntry{
-		Level:   level,
-		Message: message,
-		Time:    time.Now().Format("2006-01-02T15:04:05-0700"),
-	}
-	entry, _ := json.Marshal(logEntry)
-	logFile.Write(entry)
-	logFile.WriteString("\n")
-}
+// func init() {
+//     err := godotenv.Load(".env")
+//     if err != nil {
+//         log.Fatalf("Error loading .env file: %v", err)
+//     }
+// }
 
-func initDatabase() {
-	dsn := "postgres://postgres:postgres@localhost/gaming_club?sslmode=disable"
-	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		writeLog("error", "Failed to connect to database")
-		panic("Failed to connect to database")
-	}
-	db.AutoMigrate(&User{})
-	writeLog("info", "Database initialized successfully")
-}
+// func writeLog(level, message string) {
+// 	logEntry := LogEntry{
+// 		Level:   level,
+// 		Message: message,
+// 		Time:    time.Now().Format("2006-01-02T15:04:05-0700"),
+// 	}
+// 	entry, _ := json.Marshal(logEntry)
+// 	logFile.Write(entry)
+// 	logFile.WriteString("\n")
+// }
 
-func rateLimitMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !limiter.Allow() {
-			http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
-			writeLog("error", "Rate limit exceeded")
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
+// func initDatabase() {
+//     dsn := "postgres://postgres:postgres@localhost/gaming_club?sslmode=disable"
+//     var err error
+//     db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+//         Logger: logger.Default.LogMode(logger.Silent),
+//     })
+//     if err != nil {
+//         writeLog("error", "Failed to connect to database")
+//         panic("Failed to connect to database")
+//     }
+//     db.AutoMigrate(&User{}, &TempUser{}) // Добавьте эту строку
+//     writeLog("info", "Database initialized successfully")
+// }
 
-func createUserHandler(w http.ResponseWriter, r *http.Request) {
-	var user User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, `{"error":"invalid input"}`, http.StatusBadRequest)
-		writeLog("error", "Invalid input while creating user")
-		return
-	}
+// func rateLimitMiddleware(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		if !limiter.Allow() {
+// 			http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
+// 			writeLog("error", "Rate limit exceeded")
+// 			return
+// 		}
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
 
-	if err := db.Create(&user).Error; err != nil {
-		http.Error(w, `{"error":"failed to create user"}`, http.StatusInternalServerError)
-		writeLog("error", "Failed to create user")
-		return
-	}
+// func createUserHandler(w http.ResponseWriter, r *http.Request) {
+// 	var user User
+// 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+// 		http.Error(w, `{"error":"invalid input"}`, http.StatusBadRequest)
+// 		writeLog("error", "Invalid input while creating user")
+// 		return
+// 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
-	writeLog("info", fmt.Sprintf("User created: %v", user))
-}
+// 	if err := db.Create(&user).Error; err != nil {
+// 		http.Error(w, `{"error":"failed to create user"}`, http.StatusInternalServerError)
+// 		writeLog("error", "Failed to create user")
+// 		return
+// 	}
 
-func getUserHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
-	if id == "" {
-		http.Error(w, `{"error":"missing id parameter"}`, http.StatusBadRequest)
-		writeLog("error", "Missing id parameter in getUserHandler")
-		return
-	}
+// 	w.WriteHeader(http.StatusCreated)
+// 	json.NewEncoder(w).Encode(user)
+// 	writeLog("info", fmt.Sprintf("User created: %v", user))
+// }
 
-	var user User
-	if err := db.First(&user, id).Error; err != nil {
-		http.Error(w, `{"error":"user not found"}`, http.StatusNotFound)
-		writeLog("error", fmt.Sprintf("User not found: ID %s", id))
-		return
-	}
+// func getUserHandler(w http.ResponseWriter, r *http.Request) {
+// 	id := r.URL.Query().Get("id")
+// 	if id == "" {
+// 		http.Error(w, `{"error":"missing id parameter"}`, http.StatusBadRequest)
+// 		writeLog("error", "Missing id parameter in getUserHandler")
+// 		return
+// 	}
 
-	json.NewEncoder(w).Encode(map[string]interface{}{"user": user})
-	writeLog("info", fmt.Sprintf("User retrieved: %v", user))
-}
+// 	var user User
+// 	if err := db.First(&user, id).Error; err != nil {
+// 		http.Error(w, `{"error":"user not found"}`, http.StatusNotFound)
+// 		writeLog("error", fmt.Sprintf("User not found: ID %s", id))
+// 		return
+// 	}
 
-func updateUserHandler(w http.ResponseWriter, r *http.Request) {
-	var requestBody struct {
-		ID    uint   `json:"id"`
-		Name  string `json:"name"`
-		Email string `json:"email"`
-	}
+// 	json.NewEncoder(w).Encode(map[string]interface{}{"user": user})
+// 	writeLog("info", fmt.Sprintf("User retrieved: %v", user))
+// }
 
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		http.Error(w, `{"error":"invalid input"}`, http.StatusBadRequest)
-		writeLog("error", "Invalid input while updating user")
-		return
-	}
+// func updateUserHandler(w http.ResponseWriter, r *http.Request) {
+// 	var requestBody struct {
+// 		ID    uint   `json:"id"`
+// 		Name  string `json:"name"`
+// 		Email string `json:"email"`
+// 	}
 
-	var user User
-	if err := db.First(&user, requestBody.ID).Error; err != nil {
-		http.Error(w, `{"error":"user not found"}`, http.StatusNotFound)
-		writeLog("error", fmt.Sprintf("User not found: ID %d", requestBody.ID))
-		return
-	}
+// 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+// 		http.Error(w, `{"error":"invalid input"}`, http.StatusBadRequest)
+// 		writeLog("error", "Invalid input while updating user")
+// 		return
+// 	}
 
-	if requestBody.Name != "" {
-		user.Name = requestBody.Name
-	}
-	if requestBody.Email != "" {
-		user.Email = requestBody.Email
-	}
+// 	var user User
+// 	if err := db.First(&user, requestBody.ID).Error; err != nil {
+// 		http.Error(w, `{"error":"user not found"}`, http.StatusNotFound)
+// 		writeLog("error", fmt.Sprintf("User not found: ID %d", requestBody.ID))
+// 		return
+// 	}
 
-	if err := db.Save(&user).Error; err != nil {
-		http.Error(w, `{"error":"failed to update user"}`, http.StatusInternalServerError)
-		writeLog("error", "Failed to update user")
-		return
-	}
+// 	if requestBody.Name != "" {
+// 		user.Name = requestBody.Name
+// 	}
+// 	if requestBody.Email != "" {
+// 		user.Email = requestBody.Email
+// 	}
 
-	json.NewEncoder(w).Encode(map[string]interface{}{"message": "user updated successfully", "user": user})
-	writeLog("info", fmt.Sprintf("User updated: %v", user))
-}
+// 	if err := db.Save(&user).Error; err != nil {
+// 		http.Error(w, `{"error":"failed to update user"}`, http.StatusInternalServerError)
+// 		writeLog("error", "Failed to update user")
+// 		return
+// 	}
 
-func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
-	var requestBody struct {
-		ID uint `json:"id"`
-	}
+// 	json.NewEncoder(w).Encode(map[string]interface{}{"message": "user updated successfully", "user": user})
+// 	writeLog("info", fmt.Sprintf("User updated: %v", user))
+// }
 
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		http.Error(w, `{"error":"invalid input"}`, http.StatusBadRequest)
-		writeLog("error", "Invalid input while deleting user")
-		return
-	}
+// func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
+// 	var requestBody struct {
+// 		ID uint `json:"id"`
+// 	}
 
-	if err := db.Delete(&User{}, requestBody.ID).Error; err != nil {
-		http.Error(w, `{"error":"failed to delete user"}`, http.StatusInternalServerError)
-		writeLog("error", fmt.Sprintf("Failed to delete user: ID %d", requestBody.ID))
-		return
-	}
+// 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+// 		http.Error(w, `{"error":"invalid input"}`, http.StatusBadRequest)
+// 		writeLog("error", "Invalid input while deleting user")
+// 		return
+// 	}
 
-	json.NewEncoder(w).Encode(map[string]string{"message": "user deleted successfully"})
-	writeLog("info", fmt.Sprintf("User deleted: ID %d", requestBody.ID))
-}
+// 	if err := db.Delete(&User{}, requestBody.ID).Error; err != nil {
+// 		http.Error(w, `{"error":"failed to delete user"}`, http.StatusInternalServerError)
+// 		writeLog("error", fmt.Sprintf("Failed to delete user: ID %d", requestBody.ID))
+// 		return
+// 	}
 
-func filterSortPaginateHandler(w http.ResponseWriter, r *http.Request) {
-	filter := r.URL.Query().Get("filter")
-	sort := r.URL.Query().Get("sort")
-	page := r.URL.Query().Get("page")
+// 	json.NewEncoder(w).Encode(map[string]string{"message": "user deleted successfully"})
+// 	writeLog("info", fmt.Sprintf("User deleted: ID %d", requestBody.ID))
+// }
 
-	const limit = 10
-	offset := 0
-	if p, err := strconv.Atoi(page); err == nil && p > 1 {
-		offset = (p - 1) * limit
-	}
+// func filterSortPaginateHandler(w http.ResponseWriter, r *http.Request) {
+// 	filter := r.URL.Query().Get("filter")
+// 	sort := r.URL.Query().Get("sort")
+// 	page := r.URL.Query().Get("page")
 
-	allowedSortFields := map[string]bool{
-		"name":  true,
-		"email": true,
-		"id":    true,
-	}
+// 	const limit = 10
+// 	offset := 0
+// 	if p, err := strconv.Atoi(page); err == nil && p > 1 {
+// 		offset = (p - 1) * limit
+// 	}
 
-	if sort != "" && !allowedSortFields[sort] {
-		http.Error(w, `{"error":"invalid sort parameter"}`, http.StatusBadRequest)
-		writeLog("error", "Invalid sort parameter")
-		return
-	}
+// 	allowedSortFields := map[string]bool{
+// 		"name":  true,
+// 		"email": true,
+// 		"id":    true,
+// 	}
 
-	query := "SELECT id, name, email FROM users"
-	if filter != "" {
-		query += fmt.Sprintf(" WHERE name LIKE '%%%s%%'", filter)
-	}
-	if sort != "" {
-		query += fmt.Sprintf(" ORDER BY %s", sort)
-	}
-	query += fmt.Sprintf(" LIMIT %d OFFSET %d", limit, offset)
+// 	if sort != "" && !allowedSortFields[sort] {
+// 		http.Error(w, `{"error":"invalid sort parameter"}`, http.StatusBadRequest)
+// 		writeLog("error", "Invalid sort parameter")
+// 		return
+// 	}
 
-	writeLog("info", fmt.Sprintf("Executing query: %s", query))
+// 	query := "SELECT id, name, email FROM users"
+// 	if filter != "" {
+// 		query += fmt.Sprintf(" WHERE name LIKE '%%%s%%'", filter)
+// 	}
+// 	if sort != "" {
+// 		query += fmt.Sprintf(" ORDER BY %s", sort)
+// 	}
+// 	query += fmt.Sprintf(" LIMIT %d OFFSET %d", limit, offset)
 
-	rows, err := db.Raw(query).Rows()
-	if err != nil {
-		http.Error(w, `{"error":"failed to fetch data"}`, http.StatusInternalServerError)
-		writeLog("error", "Failed to fetch data")
-		return
-	}
-	defer rows.Close()
+// 	writeLog("info", fmt.Sprintf("Executing query: %s", query))
 
-	var users []User
-	for rows.Next() {
-		var user User
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
-			http.Error(w, `{"error":"failed to parse data"}`, http.StatusInternalServerError)
-			writeLog("error", "Failed to parse data")
-			return
-		}
-		users = append(users, user)
-	}
+// 	rows, err := db.Raw(query).Rows()
+// 	if err != nil {
+// 		http.Error(w, `{"error":"failed to fetch data"}`, http.StatusInternalServerError)
+// 		writeLog("error", "Failed to fetch data")
+// 		return
+// 	}
+// 	defer rows.Close()
 
-	json.NewEncoder(w).Encode(map[string]interface{}{"users": users})
-	writeLog("info", "Data retrieved successfully")
-}
+// 	var users []User
+// 	for rows.Next() {
+// 		var user User
+// 		if err := rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
+// 			http.Error(w, `{"error":"failed to parse data"}`, http.StatusInternalServerError)
+// 			writeLog("error", "Failed to parse data")
+// 			return
+// 		}
+// 		users = append(users, user)
+// 	}
 
-func main() {
-	initLogFile()
-	defer logFile.Close()
+// 	json.NewEncoder(w).Encode(map[string]interface{}{"users": users})
+// 	writeLog("info", "Data retrieved successfully")
+// }
 
-	initDatabase()
+// func main() {
+//     initLogFile()
+//     defer logFile.Close()
 
-	mux := http.NewServeMux()
+//     initDatabase()
 
-	mux.HandleFunc("/add-user", createUserHandler)
-	mux.HandleFunc("/get-user", getUserHandler)
-	mux.HandleFunc("/update-user", updateUserHandler)
-	mux.HandleFunc("/delete-user", deleteUserHandler)
-	mux.HandleFunc("/filter-sort-paginate", filterSortPaginateHandler)
-	mux.HandleFunc("/signup", signUpHandler)
-	mux.HandleFunc("/login", loginHandler)
+//     mux := http.NewServeMux()
 
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Content-Type", "Authorization"},
-	})
+//     mux.HandleFunc("/add-user", createUserHandler)
+//     mux.HandleFunc("/get-user", getUserHandler)
+//     mux.HandleFunc("/update-user", updateUserHandler)
+//     mux.HandleFunc("/delete-user", deleteUserHandler)
+//     mux.HandleFunc("/filter-sort-paginate", filterSortPaginateHandler)
+//     mux.HandleFunc("/signup", signUpHandler)
+//     mux.HandleFunc("/login", login)
+//     mux.HandleFunc("/verify-code", verifyCode) // Добавьте этот маршрут
+//     mux.HandleFunc("/verify-otp", verifyOTP)   // Добавьте этот маршрут
 
-	handler := rateLimitMiddleware(c.Handler(mux))
-	fmt.Println("server running on http://localhost:8080")
-	http.ListenAndServe(":8080", handler)
-}
+//     c := cors.New(cors.Options{
+//         AllowedOrigins: []string{"*"},
+//         AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+//         AllowedHeaders: []string{"Content-Type", "Authorization"},
+//     })
+
+//     handler := rateLimitMiddleware(c.Handler(mux))
+//     fmt.Println("server running on http://localhost:8080")
+//     http.ListenAndServe(":8080", handler)
+// }
+
+// package main
+
+// import (
+//     "database/sql"
+//     "encoding/json"
+//     "fmt"
+//     "net/http"
+//     "net/smtp"
+//     "time"
+
+//     "github.com/gorilla/sessions"
+//     "github.com/sirupsen/logrus"
+//     "golang.org/x/crypto/bcrypt"
+//     "golang.org/x/exp/rand"
+//     "gorm.io/gorm"
+// )
+
+// var store = sessions.NewCookieStore([]byte("super-secret-key"))
+
+// func signUpHandler(w http.ResponseWriter, r *http.Request) {
+//     writeLog("info", "Received Sign Up request")
+
+//     var user User
+//     if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+//         writeLog("error", "Invalid input for Sign Up")
+//         http.Error(w, `{"error":"Invalid input"}`, http.StatusBadRequest)
+//         return
+//     }
+
+//     // Validate input fields
+//     if user.Name == "" || user.Email == "" || user.Password == "" || user.Role == "" {
+//         writeLog("error", "Missing required fields in Sign Up")
+//         http.Error(w, `{"error":"Missing required fields"}`, http.StatusBadRequest)
+//         return
+//     }
+
+//     if user.Role != "User" && user.Role != "Admin" {
+//         writeLog("error", "Invalid role in Sign Up")
+//         http.Error(w, `{"error":"Invalid role"}`, http.StatusBadRequest)
+//         return
+//     }
+
+//     // Check if email already exists
+//     var existingUser User
+//     err := db.Where("email = ?", user.Email).First(&existingUser).Error
+//     if err == nil {
+//         writeLog("error", "Email already exists during Sign Up")
+//         http.Error(w, `{"error":"Email is already registered"}`, http.StatusConflict)
+//         return
+//     }
+//     if err != gorm.ErrRecordNotFound {
+//         writeLog("error", fmt.Sprintf("Error checking for existing user: %v", err))
+//         http.Error(w, "Database error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     // If user doesn't exist, create a new user in temp_users table
+//     verificationCode := fmt.Sprintf("%04d", rand.Intn(10000)) // Generate verification code
+
+//     tempUser := TempUser{
+//         Name:             user.Name,
+//         Email:            user.Email,
+//         Password:         user.Password,
+//         VerificationCode: verificationCode,
+//     }
+
+//     if err := db.Create(&tempUser).Error; err != nil {
+//         writeLog("error", fmt.Sprintf("Error inserting temp user: %v", err))
+//         http.Error(w, "Database error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     writeLog("info", fmt.Sprintf("Temporary user created with ID: %d", tempUser.ID))
+
+//     // Send the verification email
+//     go func() {
+//         subject := "Your Verification Code"
+//         message := fmt.Sprintf("Here is your verification code: %s", verificationCode)
+//         from := "nurbibirahmanberdy@gmail.com"
+//         password := "vxaf gbyk lqqy zhyb"
+
+//         err := sendEmail(from, password, user.Email, subject, message, "", "")
+//         if err != nil {
+//             writeLog("error", fmt.Sprintf("Failed to send verification email to %s: %v", user.Email, err))
+//         } else {
+//             writeLog("info", fmt.Sprintf("Verification code sent to %s: %s", user.Email, verificationCode))
+//         }
+//     }()
+
+//     w.Header().Set("Content-Type", "application/json")
+//     json.NewEncoder(w).Encode(map[string]string{"message": "Verification code sent to email"})
+// }
+
+// func verifyCode(w http.ResponseWriter, r *http.Request) {
+//     writeLog("info", "Verification request received.")
+
+//     if r.Method != http.MethodPost {
+//         writeLog("error", fmt.Sprintf("Invalid request method: %s", r.Method))
+//         http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+//         return
+//     }
+
+//     var requestData struct {
+//         Email            string `json:"email"`
+//         VerificationCode string `json:"code"`
+//     }
+
+//     err := json.NewDecoder(r.Body).Decode(&requestData)
+//     if err != nil {
+//         writeLog("error", fmt.Sprintf("Error decoding JSON: %v", err))
+//         http.Error(w, "Invalid JSON", http.StatusBadRequest)
+//         return
+//     }
+
+//     var tempUser TempUser
+//     err = db.Where("email = ? AND verification_code = ?", requestData.Email, requestData.VerificationCode).First(&tempUser).Error
+//     if err != nil {
+//         writeLog("error", fmt.Sprintf("Error retrieving temp user: %v", err))
+//         http.Error(w, "User not found or invalid verification code", http.StatusNotFound)
+//         return
+//     }
+
+//     hashedPassword, err := bcrypt.GenerateFromPassword([]byte(tempUser.Password), bcrypt.DefaultCost)
+//     if err != nil {
+//         writeLog("error", fmt.Sprintf("Error hashing password: %v", err))
+//         http.Error(w, "Internal server error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     user := User{
+//         Name:     tempUser.Name,
+//         Email:    tempUser.Email,
+//         Password: string(hashedPassword),
+//         Role:     "User",
+//         Verified: true,
+//     }
+
+//     if err := db.Create(&user).Error; err != nil {
+//         writeLog("error", fmt.Sprintf("Error inserting user into main table: %v", err))
+//         http.Error(w, "Database error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     if err := db.Delete(&tempUser).Error; err != nil {
+//         writeLog("error", fmt.Sprintf("Error deleting temp user: %v", err))
+//         http.Error(w, "Database error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     writeLog("info", "User successfully verified and moved to main table")
+
+//     w.Header().Set("Content-Type", "application/json")
+//     json.NewEncoder(w).Encode(map[string]string{"message": "Email verified and user registered"})
+// }
+
+// func verifyOTP(w http.ResponseWriter, r *http.Request) {
+//     var input struct {
+//         Email string `json:"email"`
+//         OTP   string `json:"otp"`
+//     }
+
+//     if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+//         http.Error(w, "Invalid request format", http.StatusBadRequest)
+//         return
+//     }
+
+//     var storedOTP string
+//     var otpExpiry time.Time
+//     var userID int
+
+//     err := db.QueryRow("SELECT id, otp, otp_expiry FROM users WHERE email = $1", input.Email).Scan(&userID, &storedOTP, &otpExpiry)
+//     if err != nil {
+//         if err == sql.ErrNoRows {
+//             http.Error(w, "User not found", http.StatusNotFound)
+//             return
+//         }
+//         http.Error(w, "Database error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     if storedOTP != input.OTP || time.Now().After(otpExpiry) {
+//         http.Error(w, "Invalid or expired OTP", http.StatusUnauthorized)
+//         return
+//     }
+
+//     _, err = db.Exec("UPDATE users SET otp = NULL, otp_expiry = NULL WHERE id = $1", userID)
+//     if err != nil {
+//         http.Error(w, "Failed to clear OTP", http.StatusInternalServerError)
+//         return
+//     }
+
+//     w.Header().Set("Content-Type", "application/json")
+//     json.NewEncoder(w).Encode(map[string]string{"message": "OTP verified"})
+// }
+
+// func sendEmail(from, password, to, subject, message, filename, fileContent string) error {
+//     smtpHost := "smtp.gmail.com"
+//     smtpPort := "587"
+
+//     auth := smtp.PlainAuth("", from, password, smtpHost)
+
+//     writeLog("info", fmt.Sprintf("Sending email started. From: %s, To: %s, Subject: %s", from, to, subject))
+
+//     mime := "MIME-version: 1.0;\nContent-Type: multipart/mixed; boundary=\"boundary1\"\n\n"
+//     body := "--boundary1\n"
+//     body += "Content-Type: text/plain; charset=\"utf-8\"\n\n"
+//     body += message + "\n\n"
+
+//     if filename != "" && fileContent != "" {
+//         body += "--boundary1\n"
+//         body += "Content-Type: application/octet-stream; name=\"" + filename + "\"\n"
+//         body += "Content-Disposition: attachment; filename=\"" + filename + "\"\n"
+//         body += "Content-Transfer-Encoding: base64\n\n"
+//         body += fileContent + "\n"
+//     }
+
+//     msg := "From: " + from + "\n" +
+//         "To: " + to + "\n" +
+//         "Subject: " + subject + "\n" +
+//         mime + body + "--boundary1--"
+
+//     err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, []byte(msg))
+//     if err != nil {
+//         writeLog("error", fmt.Sprintf("Failed to send email. From: %s, To: %s, Subject: %s, Error: %v", from, to, subject, err))
+//         return err
+//     }
+
+//     writeLog("info", fmt.Sprintf("Email sent successfully. From: %s, To: %s, Subject: %s", from, to, subject))
+//     return nil
+// }
+
+// func login(w http.ResponseWriter, r *http.Request) {
+//     logrus.WithFields(logrus.Fields{
+//         "method":   r.Method,
+//         "endpoint": "/login",
+//     }).Info("Request started")
+
+//     if r.Method != http.MethodPost {
+//         logrus.WithFields(logrus.Fields{
+//             "method": r.Method,
+//             "status": "fail",
+//         }).Warn("Invalid request method")
+//         http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+//         return
+//     }
+
+//     var credentials struct {
+//         Email    string `json:"email"`
+//         Password string `json:"password"`
+//     }
+
+//     err := json.NewDecoder(r.Body).Decode(&credentials)
+//     if err != nil {
+//         logrus.WithFields(logrus.Fields{
+//             "error":  err.Error(),
+//             "status": "fail",
+//         }).Error("Failed to decode JSON")
+//         w.Header().Set("Content-Type", "application/json")
+//         w.WriteHeader(http.StatusBadRequest)
+//         json.NewEncoder(w).Encode(map[string]string{
+//             "message": "Invalid JSON format",
+//             "status":  "fail",
+//         })
+//         return
+//     }
+
+//     var user User
+//     var storedPassword string
+//     query := `
+//         SELECT id, name, email, password, role, verified 
+//         FROM users 
+//         WHERE email = $1`
+//     err = db.QueryRow(query, credentials.Email).Scan(
+//         &user.ID, &user.Name, &user.Email, &storedPassword, &user.Role, &user.Verified,
+//     )
+//     if err != nil {
+//         if err == sql.ErrNoRows {
+//             logrus.WithFields(logrus.Fields{
+//                 "email":  credentials.Email,
+//                 "status": "fail",
+//             }).Warn("Invalid email or password")
+//             w.Header().Set("Content-Type", "application/json")
+//             w.WriteHeader(http.StatusUnauthorized)
+//             json.NewEncoder(w).Encode(map[string]string{
+//                 "message": "Invalid email or password",
+//                 "status":  "fail",
+//             })
+//             return
+//         }
+//         logrus.WithFields(logrus.Fields{
+//             "error":  err.Error(),
+//             "status": "fail",
+//         }).Error("Database error during login")
+//         http.Error(w, "Database error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(credentials.Password))
+//     if err != nil {
+//         logrus.WithFields(logrus.Fields{
+//             "email":  credentials.Email,
+//             "status": "fail",
+//         }).Warn("Invalid email or password")
+//         w.Header().Set("Content-Type", "application/json")
+//         w.WriteHeader(http.StatusUnauthorized)
+//         json.NewEncoder(w).Encode(map[string]string{
+//             "message": "Invalid email or password",
+//             "status":  "fail",
+//         })
+//         return
+//     }
+
+//     // Генерация OTP
+//     otp := fmt.Sprintf("%06d", rand.Intn(1000000)) // 6-значный код
+//     expiry := time.Now().Add(5 * time.Minute)      // Срок действия OTP: 5 минут
+
+//     // Сохраняем OTP и время его действия в базе данных
+//     _, err = db.Exec("UPDATE users SET otp = $1, otp_expiry = $2 WHERE id = $3", otp, expiry, user.ID)
+//     if err != nil {
+//         logrus.Error("Failed to save OTP:", err)
+//         http.Error(w, "Internal server error", http.StatusInternalServerError)
+//         return
+//     }
+
+//     // Отправка OTP на email
+//     go sendEmail("nurbibirahmanberdy@gmail.com", "vxaf gbyk lqqy zhyb", user.Email, "Your OTP Code", fmt.Sprintf("Your OTP is: %s", otp), "", "")
+
+//     //Cookies
+//     session, _ := store.Get(r, "user-session")
+//     session.Values["userID"] = user.ID
+//     session.Values["name"] = user.Name
+//     session.Values["email"] = user.Email
+//     session.Values["role"] = user.Role
+//     session.Values["verified"] = user.Verified
+//     session.Save(r, w)
+
+//     // Отправляем успешный ответ с данными пользователя (не с OTP)
+//     w.Header().Set("Content-Type", "application/json")
+//     json.NewEncoder(w).Encode(user)
+
+//     logrus.WithFields(logrus.Fields{
+//         "userID": user.ID,
+//         "email":  user.Email,
+//         "status": "success",
+//     }).Info("User logged in successfully")
+// }
+package main 

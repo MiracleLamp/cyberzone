@@ -285,3 +285,62 @@
 {"level":"info","msg":"Database initialized successfully","time":"2025-01-23T16:33:22+0500"}
 {"level":"info","msg":"Received Sign Up request","time":"2025-01-23T16:33:32+0500"}
 {"level":"error","msg":"Email already exists during Sign Up","time":"2025-01-23T16:33:32+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T18:17:36+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-23T18:21:08+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-23T18:22:41+0500"}
+{"level":"error","msg":"Failed to send verification email","time":"2025-01-23T18:22:41+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T14:32:57+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T14:44:58+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-29T14:45:33+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-29T14:45:52+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-29T14:46:13+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-29T14:46:15+0500"}
+{"level":"error","msg":"Missing id parameter in getUserHandler","time":"2025-01-29T14:46:19+0500"}
+{"level":"error","msg":"Rate limit exceeded","time":"2025-01-29T14:47:07+0500"}
+{"level":"error","msg":"Rate limit exceeded","time":"2025-01-29T14:47:58+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T15:35:06+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T15:41:58+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T15:45:08+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T15:45:55+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T15:48:40+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T15:51:39+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-29T15:51:55+0500"}
+{"level":"info","msg":"User signed up successfully: {45 Hayat nabib@gmail.com 1234 User false}","time":"2025-01-29T15:51:55+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-29T15:52:06+0500"}
+{"level":"info","msg":"User logged in successfully: {45 Hayat nabib@gmail.com 1234 User false}","time":"2025-01-29T15:52:06+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-29T15:59:23+0500"}
+{"level":"info","msg":"User signed up successfully: {46 ygytfiu tfyg89o@gmail.com 234 User false}","time":"2025-01-29T15:59:23+0500"}
+{"level":"info","msg":"Database initialized successfully","time":"2025-01-29T18:54:40+0500"}
+{"level":"info","msg":"Received Sign Up request","time":"2025-01-29T18:55:51+0500"}
+{"level":"info","msg":"Temporary user created with ID: 1","time":"2025-01-29T18:55:51+0500"}
+{"level":"info","msg":"Sending email started. From: nurbibirahmanberdy@gmail.com, To: maksatkarzhaubaev91@gmail.com, Subject: Your Verification Code","time":"2025-01-29T18:55:51+0500"}
+{"level":"error","msg":"Failed to send email. From: nurbibirahmanberdy@gmail.com, To: maksatkarzhaubaev91@gmail.com, Subject: Your Verification Code, Error: 535 5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 38308e7fff4ca-3078ff5ba42sm5947841fa.81 - gsmtp","time":"2025-01-29T18:55:52+0500"}
+{"level":"error","msg":"Failed to send verification email to maksatkarzhaubaev91@gmail.com: 535 5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 38308e7fff4ca-3078ff5ba42sm5947841fa.81 - gsmtp","time":"2025-01-29T18:55:52+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-29T18:59:49+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-29T18:59:49+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-29T18:59:57+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-29T18:59:57+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-29T19:00:10+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-29T19:00:10+0500"}
+{"level":"info","msg":"Received Login request","time":"2025-01-29T19:00:24+0500"}
+{"level":"error","msg":"Email not found during Login","time":"2025-01-29T19:00:24+0500"}
+2025-01-29T19:22:56+05:00 [info] Database initialized successfully
+2025-01-29T19:25:42+05:00 [info] Database initialized successfully
+2025-01-29T19:26:44+05:00 [info] Database initialized successfully
+2025-01-29T19:37:47+05:00 [info] Database initialized successfully
+2025-01-29T19:44:34+05:00 [info] Database initialized successfully
+2025-01-29T19:44:49+05:00 [info] Database initialized successfully
+2025-01-29T19:45:44+05:00 [info] Database initialized successfully
+2025-01-29T19:51:23+05:00 [info] Database initialized successfully
+2025-01-29T19:57:31+05:00 [info] Database initialized successfully
+2025-01-30T15:13:01+05:00 [info] Database initialized successfully
+2025-01-30T15:22:40+05:00 [info] Database initialized successfully
+2025-01-30T15:24:31+05:00 [info] Database initialized successfully
+2025-01-30T15:25:23+05:00 [info] Database initialized successfully
+2025-01-30T15:47:07+05:00 [info] Database initialized successfully
+2025-01-30T15:53:43+05:00 [info] Database initialized successfully
+2025-01-30T16:05:42+05:00 [info] Database initialized successfully
+2025-01-30T16:26:07+05:00 [info] Database initialized successfully
+2025-01-30T16:29:09+05:00 [info] Database initialized successfully
+2025-01-30T16:38:20+05:00 [info] Database initialized successfully
+2025-01-30T16:43:55+05:00 [info] Database initialized successfully

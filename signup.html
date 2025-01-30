@@ -141,11 +141,12 @@
     
           const data = await response.json();
     
+          // Handling different HTTP statuses
           if (response.status === 409) {
-            alert(data.error);
+            alert("Email already registered. Please use a different email.");
           } else if (response.ok) {
-            window.location.href = "login.html"; 
             alert("Sign up successful!");
+            window.location.href = "login.html"; 
           } else {
             alert(data.error || "An error occurred.");
           }
@@ -154,6 +155,7 @@
           alert("Something went wrong. Please try again later.");
         }
       });
-    </script>    
+    </script>
+    
   </body>
 </html>
