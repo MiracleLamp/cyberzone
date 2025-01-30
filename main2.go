@@ -11,6 +11,9 @@ import (
 
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
+
+	"github.com/golang-jwt/jwt/v4"
+
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/exp/rand"
 	"golang.org/x/time/rate"
@@ -19,20 +22,20 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// Определение структур данных
+// **Құрылымдар**
 type User struct {
-	ID        uint `gorm:"primaryKey"`
+	ID        uint   `gorm:"primaryKey"`
 	Name      string
 	Email     string `gorm:"unique"`
 	Password  string
 	Role      string
-	Verified  bool `gorm:"default:false"`
-	OTP       string
-	OTPExpiry time.Time
+	Verified  bool      `gorm:"default:false"`
+	OTP       string    `json:"otp,omitempty"`
+	OTPExpiry time.Time `json:"otp_expiry,omitempty"`
 }
 
 type TempUser struct {
-	ID               uint `gorm:"primaryKey"`
+	ID               uint   `gorm:"primaryKey"`
 	Name             string
 	Email            string `gorm:"unique"`
 	Password         string
@@ -41,26 +44,18 @@ type TempUser struct {
 
 var (
 	db      *gorm.DB
-	limiter = rate.NewLimiter(1, 3) // 1 запрос в секунду, с буфером на 3 запроса
+	limiter = rate.NewLimiter(1, 3)
 	logFile *os.File
 )
-
-// Инициализация логирования
-func initLogFile() {
-	var err error
-	logFile, err = os.OpenFile("server_logs.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatalf("Failed to open log file: %v", err)
-	}
-	log.SetOutput(logFile)
-}
-
 func writeLog(level, message string) {
 	logrus.WithFields(logrus.Fields{"level": level}).Info(message)
-	logFile.WriteString(fmt.Sprintf("%s [%s] %s\n", time.Now().Format(time.RFC3339), level, message))
+
+	if logFile != nil {
+		logFile.WriteString(fmt.Sprintf("%s [%s] %s\n", time.Now().Format(time.RFC3339), level, message))
+	}
 }
 
-// Инициализация базы данных
+// **Базаға қосылу**
 func initDatabase() {
 	dsn := "postgres://postgres:postgres@localhost/gaming_club?sslmode=disable"
 	var err error
@@ -68,26 +63,13 @@ func initDatabase() {
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
-		writeLog("error", "Failed to connect to database")
-		panic("Failed to connect to database")
+		log.Fatal("Failed to connect to database:", err)
 	}
 	db.AutoMigrate(&User{}, &TempUser{})
-	writeLog("info", "Database initialized successfully")
+	log.Println("Database initialized successfully")
 }
 
-// Middleware для ограничения частоты запросов
-func rateLimitMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !limiter.Allow() {
-			http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
-			writeLog("error", "Rate limit exceeded")
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
-// Регистрация пользователя с отправкой верификационного кода
+// **Тіркелу (Email верификациясымен)**
 func signUpHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -95,43 +77,34 @@ func signUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Проверка существования email
 	var existingUser User
 	if err := db.Where("email = ?", user.Email).First(&existingUser).Error; err == nil {
 		http.Error(w, `{"error":"Email is already registered"}`, http.StatusConflict)
 		return
 	}
 
-	verificationCode := fmt.Sprintf("%04d", rand.Intn(10000)) // 4-значный код
+	verificationCode := fmt.Sprintf("%04d", rand.Intn(10000))
 	tempUser := TempUser{Name: user.Name, Email: user.Email, Password: user.Password, VerificationCode: verificationCode}
 	db.Create(&tempUser)
 
-	// Отправка email
-	go sendEmail("mirasbeyse@gmail.com", "fhqj slmp jexj vkrf", user.Email, "Verification Code", verificationCode)
+	go sendEmail(user.Email, "Verification Code", verificationCode)
 
-	// Сәтті тіркелген хабарлама
 	json.NewEncoder(w).Encode(map[string]string{"message": "Verification code sent"})
 }
 
+// **Email растау**
 func verifyCode(w http.ResponseWriter, r *http.Request) {
-	email := r.URL.Query().Get("email")
-	code := r.URL.Query().Get("code")
-
-	if email == "" || code == "" {
-		var requestData struct {
-			Email string `json:"email"`
-			Code  string `json:"code"`
-		}
-		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
-			http.Error(w, "Invalid JSON", http.StatusBadRequest)
-			return
-		}
-		email = requestData.Email
-		code = requestData.Code
+	var requestData struct {
+		Email string `json:"email"`
+		Code  string `json:"code"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
 	}
 
 	var tempUser TempUser
-	if err := db.Where("email = ? AND verification_code = ?", email, code).First(&tempUser).Error; err != nil {
+	if err := db.Where("email = ? AND verification_code = ?", requestData.Email, requestData.Code).First(&tempUser).Error; err != nil {
 		http.Error(w, "Invalid verification code", http.StatusNotFound)
 		return
 	}
@@ -141,11 +114,10 @@ func verifyCode(w http.ResponseWriter, r *http.Request) {
 	db.Create(&user)
 	db.Delete(&tempUser)
 
-	// Верификация сәтті аяқталды
-	fmt.Fprintf(w, "Email successfully verified! You can now login.")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Email verified, you can login now."})
 }
 
-// Логин функциясы
+// **Логин (OTP жіберумен)**
 func login(w http.ResponseWriter, r *http.Request) {
 	var credentials struct {
 		Email    string `json:"email"`
@@ -153,111 +125,120 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
-		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+		http.Error(w, `{"error":"Invalid JSON format"}`, http.StatusBadRequest)
 		writeLog("error", fmt.Sprintf("Failed to decode JSON: %v", err))
 		return
 	}
 
 	var user User
 	if err := db.Where("email = ?", credentials.Email).First(&user).Error; err != nil {
-		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		http.Error(w, `{"error":"Invalid email or password"}`, http.StatusUnauthorized)
 		writeLog("error", fmt.Sprintf("User not found for email: %s", credentials.Email))
 		return
 	}
 
-	// **Email верификациясын тексеру**
 	if !user.Verified {
-		http.Error(w, "Email is not verified", http.StatusUnauthorized)
+		http.Error(w, `{"error":"Email is not verified"}`, http.StatusUnauthorized)
 		writeLog("error", fmt.Sprintf("User email is not verified: %s", credentials.Email))
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password)); err != nil {
-		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		http.Error(w, `{"error":"Invalid email or password"}`, http.StatusUnauthorized)
 		writeLog("error", fmt.Sprintf("Invalid password for email: %s", credentials.Email))
 		return
 	}
 
-	// **Логин сәтті өтті**
-	writeLog("info", fmt.Sprintf("User logged in successfully: %s", credentials.Email))
+	// Егер рөл жоқ болса, оны "User" деп орнату
+	if user.Role == "" {
+		user.Role = "User"
+	}
 
-	// **Рөлді JSON жауапқа қосу керек**
+	// JSON-ға рөлді қосу
 	response := map[string]string{
 		"message": "Login successful",
-		"role":    user.Role, // ← Мұнда рөлді қосамыз
+		"role":    user.Role,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
-// Отправка email
-func sendEmail(from, password, to, subject, message string) error {
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
 
-	auth := smtp.PlainAuth("", from, password, smtpHost)
-
-	logrus.WithFields(logrus.Fields{
-		"from":    from,
-		"to":      to,
-		"subject": subject,
-	}).Info("Sending email started")
-
-	// HTML контенті үшін MIME типін анықтаймыз
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"utf-8\"\n\n"
-	body := "<html><body>"
-	body += "<h2>Welcome to our Service!</h2>"
-	body += "<p>Click the link below to verify your email:</p>"
-	// HTML батырмасы
-	body += fmt.Sprintf(`
-        <a href="http://localhost:8080/verify-code?email=%s&code=%s" style="
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #28a745;
-            text-decoration: none;
-            border-radius: 5px;
-        ">Verify Email</a>s
-    `, to, message) // message-те верификациялық код болады
-	body += "</body></html>"
-
-	// Поштаны жібереміз
-	msg := "From: " + from + "\n" +
-		"To: " + to + "\n" +
-		"Subject: " + subject + "\n" +
-		mime + body
-
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, []byte(msg))
-	if err != nil {
-		logrus.WithFields(logrus.Fields{
-			"from":    from,
-			"to":      to,
-			"subject": subject,
-			"error":   err.Error(),
-		}).Error("Failed to send email")
-		return err
+// **OTP Тексеру**
+func verifyOTP(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Email string `json:"email"`
+		OTP   string `json:"otp"`
 	}
 
-	logrus.WithFields(logrus.Fields{
-		"from":    from,
-		"to":      to,
-		"subject": subject,
-	}).Info("Email sent successfully")
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+		return
+	}
 
-	return nil
+	var user User
+	if err := db.Where("email = ?", input.Email).First(&user).Error; err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	if user.OTP != input.OTP || time.Now().After(user.OTPExpiry) {
+		http.Error(w, "Invalid or expired OTP", http.StatusUnauthorized)
+		return
+	}
+
+	token, _ := generateToken(user)
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Login successful",
+		"token":   token,
+		"role":    user.Role,
+	})
 }
 
-// Главная функция
-func main() {
-	initLogFile()
-	initDatabase()
+// **JWT Токен жасау**
+func generateToken(user User) (string, error) {
+	claims := jwt.MapClaims{
+		"email": user.Email,
+		"role":  user.Role,
+		"exp":   time.Now().Add(time.Hour * 24).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte("your_secret_key"))
+}
 
+// **Email жіберу**
+func sendEmail(to, subject, message string) {
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+	auth := smtp.PlainAuth("", "your-email@gmail.com", "your-email-password", smtpHost)
+
+	msg := fmt.Sprintf("From: your-email@gmail.com\nTo: %s\nSubject: %s\n\n%s", to, subject, message)
+	smtp.SendMail(smtpHost+":"+smtpPort, auth, "your-email@gmail.com", []string{to}, []byte(msg))
+}
+
+
+func rateLimitMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !limiter.Allow() {
+			http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
+			logrus.Error("Rate limit exceeded")
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// **Server іске қосу**
+func main() {
+	initDatabase()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/signup", signUpHandler)
 	mux.HandleFunc("/verify-code", verifyCode)
 	mux.HandleFunc("/login", login)
+	mux.HandleFunc("/verify-otp", verifyOTP)
 
 	handler := rateLimitMiddleware(cors.Default().Handler(mux))
 	fmt.Println("Server running on http://localhost:8080")
