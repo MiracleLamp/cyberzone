@@ -8,6 +8,7 @@ import (
 	"net/smtp"
 	"os"
 	"time"
+
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
@@ -144,7 +145,7 @@ func verifyCode(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Email successfully verified! You can now login.")
 }
 
-// Вход пользователя
+// Логин функциясы
 func login(w http.ResponseWriter, r *http.Request) {
 	var credentials struct {
 		Email    string `json:"email"`
@@ -153,29 +154,41 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
 		http.Error(w, "Invalid JSON format", http.StatusBadRequest)
+		writeLog("error", fmt.Sprintf("Failed to decode JSON: %v", err))
 		return
 	}
 
 	var user User
 	if err := db.Where("email = ?", credentials.Email).First(&user).Error; err != nil {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		writeLog("error", fmt.Sprintf("User not found for email: %s", credentials.Email))
+		return
+	}
+
+	// **Email верификациясын тексеру**
+	if !user.Verified {
+		http.Error(w, "Email is not verified", http.StatusUnauthorized)
+		writeLog("error", fmt.Sprintf("User email is not verified: %s", credentials.Email))
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password)); err != nil {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		writeLog("error", fmt.Sprintf("Invalid password for email: %s", credentials.Email))
 		return
 	}
 
-	// Генерация и отправка OTP
-	otp := fmt.Sprintf("%06d", rand.Intn(1000000))
-	user.OTP = otp
-	user.OTPExpiry = time.Now().Add(5 * time.Minute)
-	db.Save(&user)
+	// **Логин сәтті өтті**
+	writeLog("info", fmt.Sprintf("User logged in successfully: %s", credentials.Email))
 
-	go sendEmail("mirasbeyse@gmail.com", "fhqj slmp jexj vkrfç", user.Email, "Your OTP Code", otp)
+	// **Рөлді JSON жауапқа қосу керек**
+	response := map[string]string{
+		"message": "Login successful",
+		"role":    user.Role, // ← Мұнда рөлді қосамыз
+	}
 
-	json.NewEncoder(w).Encode(map[string]string{"message": "OTP sent"})
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
 // Отправка email

@@ -100,34 +100,43 @@
 
     <script>
       document.getElementById("login-form").addEventListener("submit", async function (event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-        try {
-          const response = await fetch("http://localhost:8080/login", {
+    try {
+        const response = await fetch("http://localhost:8080/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
-          });
+        });
 
-          const data = await response.json();
+        const text = await response.text();  // Жауапты алдымен текст ретінде аламыз
+        console.log("Server Response:", text);
 
-          if (response.ok) {
-            if (data.role === "Admin") {
-              window.location.href = "admin.html";
-            } else if (data.role === "User") {
-              window.location.href = "user.html";
-            }
-          } else {
-            alert(data.error || "An error occurred.");
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          alert("Something went wrong. Please try again later.");
+        const data = JSON.parse(text);  // JSON пішімінде парсинг жасау
+
+        if (!response.ok) {
+            throw new Error(data.error || "Login failed. Please check your credentials.");
         }
-      });
+
+        alert(data.message);  // Сәтті логин туралы хабарлау
+        console.log("User Role:", data.role);  // Рөлді консольге шығару
+
+        if (data.role.toLowerCase() === "admin") {
+          window.location.href = "admin.html";
+        } else if (data.role.toLowerCase() === "user") {
+          window.location.href = "user.html";
+        } else {
+            alert("Unknown user role. Please contact support.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert(error.message);
+    }
+});
+
     </script>
   </body>
 </html>
