@@ -9,10 +9,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-
-	"github.com/golang-jwt/jwt/v4"
 
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/exp/rand"
@@ -22,7 +21,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// **Құрылымдар**
+// Структуры
 type User struct {
 	ID        uint   `gorm:"primaryKey"`
 	Name      string
@@ -45,17 +44,36 @@ type TempUser struct {
 var (
 	db      *gorm.DB
 	limiter = rate.NewLimiter(1, 3)
-	logFile *os.File
 )
-func writeLog(level, message string) {
-	logrus.WithFields(logrus.Fields{"level": level}).Info(message)
 
-	if logFile != nil {
-		logFile.WriteString(fmt.Sprintf("%s [%s] %s\n", time.Now().Format(time.RFC3339), level, message))
+// Логирование в файл JSON
+type LogEntry struct {
+	Timestamp time.Time `json:"timestamp"`
+	Level     string    `json:"level"`
+	Message   string    `json:"message"`
+}
+
+func writeLogToFile(level, message string) {
+	logEntry := LogEntry{
+		Timestamp: time.Now(),
+		Level:     level,
+		Message:   message,
+	}
+
+	file, err := os.OpenFile("server_logs.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Error opening log file: %v", err)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(logEntry); err != nil {
+		log.Fatalf("Error writing log entry: %v", err)
 	}
 }
 
-// **Базаға қосылу**
+// Подключение к базе данных
 func initDatabase() {
 	dsn := "postgres://postgres:postgres@localhost/gaming_club?sslmode=disable"
 	var err error
@@ -69,55 +87,108 @@ func initDatabase() {
 	log.Println("Database initialized successfully")
 }
 
-// **Тіркелу (Email верификациясымен)**
+// Регистрация с верификацией Email
+// Регистрация с уникальным кодом верификации
+// Регистрация с верификацией Email
+// Регистрация с верификацией Email
+// Регистрация с верификацией Email
 func signUpHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		writeLogToFile("error", fmt.Sprintf("Failed to decode user data: %v", err))
 		http.Error(w, `{"error":"Invalid input"}`, http.StatusBadRequest)
 		return
 	}
 
 	var existingUser User
 	if err := db.Where("email = ?", user.Email).First(&existingUser).Error; err == nil {
+		writeLogToFile("error", fmt.Sprintf("Email already registered: %s", user.Email))
 		http.Error(w, `{"error":"Email is already registered"}`, http.StatusConflict)
 		return
 	}
 
-	verificationCode := fmt.Sprintf("%04d", rand.Intn(10000))
-	tempUser := TempUser{Name: user.Name, Email: user.Email, Password: user.Password, VerificationCode: verificationCode}
-	db.Create(&tempUser)
+	// Генерация уникального кода подтверждения
+	verificationCode := generateVerificationCode()
 
+	// Создаем временного пользователя в таблице temp_users
+	tempUser := TempUser{
+		Name:             user.Name,
+		Email:            user.Email,
+		Password:         user.Password,
+		VerificationCode: verificationCode,
+	}
+
+	// Сохраняем временного пользователя в базу данных
+	if err := db.Create(&tempUser).Error; err != nil {
+		writeLogToFile("error", fmt.Sprintf("Failed to create temp user in DB: %v", err))  // Добавляем подробный лог
+		http.Error(w, `{"error":"Failed to create temporary user"}`, http.StatusInternalServerError)
+		return
+	}
+
+	// Отправляем код подтверждения на email
 	go sendEmail(user.Email, "Verification Code", verificationCode)
 
+	writeLogToFile("info", fmt.Sprintf("Verification code sent to: %s", user.Email))
+
+	// Ответ клиенту
 	json.NewEncoder(w).Encode(map[string]string{"message": "Verification code sent"})
 }
 
-// **Email растау**
+
+
+
+// Верификация email
+// Верификация email
 func verifyCode(w http.ResponseWriter, r *http.Request) {
 	var requestData struct {
 		Email string `json:"email"`
 		Code  string `json:"code"`
 	}
+
 	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		writeLogToFile("error", fmt.Sprintf("Invalid JSON format: %v", err))
+		http.Error(w, `{"error":"Invalid JSON format"}`, http.StatusBadRequest)
 		return
 	}
 
 	var tempUser TempUser
+	// Ищем временного пользователя по email и verification_code
 	if err := db.Where("email = ? AND verification_code = ?", requestData.Email, requestData.Code).First(&tempUser).Error; err != nil {
-		http.Error(w, "Invalid verification code", http.StatusNotFound)
+		writeLogToFile("error", fmt.Sprintf("Invalid verification code for email: %s", requestData.Email))
+		http.Error(w, `{"error":"Invalid verification code"}`, http.StatusNotFound)
 		return
 	}
 
+	// Хешируем пароль перед сохранением
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(tempUser.Password), bcrypt.DefaultCost)
-	user := User{Name: tempUser.Name, Email: tempUser.Email, Password: string(hashedPassword), Role: "User", Verified: true}
-	db.Create(&user)
-	db.Delete(&tempUser)
+	user := User{
+		Name:      tempUser.Name,
+		Email:     tempUser.Email,
+		Password:  string(hashedPassword),
+		Role:      "User",
+		Verified:  true,
+	}
 
+	// Создаем нового пользователя
+	if err := db.Create(&user).Error; err != nil {
+		writeLogToFile("error", fmt.Sprintf("Failed to create verified user: %v", err))
+		http.Error(w, `{"error":"Failed to create verified user"}`, http.StatusInternalServerError)
+		return
+	}
+
+	// Удаляем временного пользователя
+	if err := db.Delete(&tempUser).Error; err != nil {
+		writeLogToFile("error", fmt.Sprintf("Failed to delete temp user: %v", err))
+	}
+
+	writeLogToFile("info", fmt.Sprintf("Email verified for: %s", requestData.Email))
+
+	// Ответ клиенту
 	json.NewEncoder(w).Encode(map[string]string{"message": "Email verified, you can login now."})
 }
 
-// **Логин (OTP жіберумен)**
+
+// Логин с OTP
 func login(w http.ResponseWriter, r *http.Request) {
 	var credentials struct {
 		Email    string `json:"email"`
@@ -126,47 +197,46 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
 		http.Error(w, `{"error":"Invalid JSON format"}`, http.StatusBadRequest)
-		writeLog("error", fmt.Sprintf("Failed to decode JSON: %v", err))
 		return
 	}
 
 	var user User
 	if err := db.Where("email = ?", credentials.Email).First(&user).Error; err != nil {
 		http.Error(w, `{"error":"Invalid email or password"}`, http.StatusUnauthorized)
-		writeLog("error", fmt.Sprintf("User not found for email: %s", credentials.Email))
 		return
 	}
 
 	if !user.Verified {
 		http.Error(w, `{"error":"Email is not verified"}`, http.StatusUnauthorized)
-		writeLog("error", fmt.Sprintf("User email is not verified: %s", credentials.Email))
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password)); err != nil {
 		http.Error(w, `{"error":"Invalid email or password"}`, http.StatusUnauthorized)
-		writeLog("error", fmt.Sprintf("Invalid password for email: %s", credentials.Email))
 		return
 	}
 
-	// Егер рөл жоқ болса, оны "User" деп орнату
-	if user.Role == "" {
-		user.Role = "User"
-	}
+	// Генерация OTP для входа
+	otp := fmt.Sprintf("%06d", rand.Intn(1000000))
+	user.OTP = otp
+	user.OTPExpiry = time.Now().Add(5 * time.Minute)
+	db.Save(&user)
 
-	// JSON-ға рөлді қосу
-	response := map[string]string{
-		"message": "Login successful",
-		"role":    user.Role,
-	}
+	go sendEmail(user.Email, "Your OTP for login", otp)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	writeLogToFile("info", fmt.Sprintf("OTP sent to: %s", user.Email))
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "OTP sent to your email.",
+	})
+}
+// Генерация случайного кода
+func generateVerificationCode() string {
+	rand.Seed(uint64(time.Now().UnixNano())) // Инициализация генератора случайных чисел
+    return fmt.Sprintf("%04d", rand.Intn(10000)) // Генерация кода из 4 цифр
 }
 
-
-// **OTP Тексеру**
+// Проверка OTP для входа
 func verifyOTP(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Email string `json:"email"`
@@ -189,7 +259,14 @@ func verifyOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := generateToken(user)
+	// Генерация JWT токена
+	token, err := generateToken(user)
+	if err != nil {
+		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+		return
+	}
+
+	writeLogToFile("info", fmt.Sprintf("Login successful for: %s", input.Email))
 
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "Login successful",
@@ -198,7 +275,7 @@ func verifyOTP(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// **JWT Токен жасау**
+// Генерация JWT токена
 func generateToken(user User) (string, error) {
 	claims := jwt.MapClaims{
 		"email": user.Email,
@@ -206,19 +283,18 @@ func generateToken(user User) (string, error) {
 		"exp":   time.Now().Add(time.Hour * 24).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte("your_secret_key"))
+	return token.SignedString([]byte("t/PsFMLt6kqMC4WKEpXbTxuysx1bolhhi2rshUJXttE="))
 }
 
-// **Email жіберу**
+// Отправка Email
 func sendEmail(to, subject, message string) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
-	auth := smtp.PlainAuth("", "your-email@gmail.com", "your-email-password", smtpHost)
+	auth := smtp.PlainAuth("", "mirasbeyse@gmail.com", "fhqj slmp jexj vkrf", smtpHost)
 
-	msg := fmt.Sprintf("From: your-email@gmail.com\nTo: %s\nSubject: %s\n\n%s", to, subject, message)
-	smtp.SendMail(smtpHost+":"+smtpPort, auth, "your-email@gmail.com", []string{to}, []byte(msg))
+	msg := fmt.Sprintf("From: mirasbeyse@gmail.com\nTo: %s\nSubject: %s\n\n%s", to, subject, message)
+	smtp.SendMail(smtpHost+":"+smtpPort, auth, "mirasbeyse@gmail.com", []string{to}, []byte(msg))
 }
-
 
 func rateLimitMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -231,7 +307,7 @@ func rateLimitMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// **Server іске қосу**
+// Запуск сервера
 func main() {
 	initDatabase()
 	mux := http.NewServeMux()
