@@ -89,6 +89,7 @@
           if (!response.ok) {
             throw new Error(data.error || "Login failed. Please check your credentials.");
           }
+          
           window.location.href = "otp.html?email=" + email;
           alert(data.message);
 

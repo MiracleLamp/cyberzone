@@ -86,11 +86,41 @@ func initDatabase() {
 	db.AutoMigrate(&User{}, &TempUser{})
 	log.Println("Database initialized successfully")
 }
+func rateLimitMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !limiter.Allow() {
+			http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
+			logrus.Error("Rate limit exceeded")
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+// Генерация случайного кода
+func generateVerificationCode() string {
+	rand.Seed(uint64(time.Now().UnixNano())) // Инициализация генератора случайных чисел
+	return fmt.Sprintf("%04d", rand.Intn(10000)) // Генерация кода из 4 цифр
+}
 
-// Регистрация с верификацией Email
-// Регистрация с уникальным кодом верификации
-// Регистрация с верификацией Email
-// Регистрация с верификацией Email
+// Отправка Email
+func sendEmail(to, subject, message string) {
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+	auth := smtp.PlainAuth("", "mirasbeyse@gmail.com", "fhqj slmp jexj vkrf", smtpHost)
+
+	msg := fmt.Sprintf("From: mirasbeyse@gmail.com\nTo: %s\nSubject: %s\n\n%s", to, subject, message)
+
+	// Логирование перед отправкой письма
+	log.Printf("Sending email to %s with subject %s", to, subject)
+
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, "mirasbeyse@gmail.com", []string{to}, []byte(msg))
+	if err != nil {
+		log.Printf("Error sending email: %v", err)
+	} else {
+		log.Printf("Email sent to %s", to)
+	}
+}
+
 // Регистрация с верификацией Email
 func signUpHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
@@ -120,7 +150,7 @@ func signUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Сохраняем временного пользователя в базу данных
 	if err := db.Create(&tempUser).Error; err != nil {
-		writeLogToFile("error", fmt.Sprintf("Failed to create temp user in DB: %v", err))  // Добавляем подробный лог
+		writeLogToFile("error", fmt.Sprintf("Failed to create temp user in DB: %v", err))
 		http.Error(w, `{"error":"Failed to create temporary user"}`, http.StatusInternalServerError)
 		return
 	}
@@ -134,10 +164,6 @@ func signUpHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "Verification code sent"})
 }
 
-
-
-
-// Верификация email
 // Верификация email
 func verifyCode(w http.ResponseWriter, r *http.Request) {
 	var requestData struct {
@@ -187,7 +213,6 @@ func verifyCode(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "Email verified, you can login now."})
 }
 
-
 // Логин с OTP
 func login(w http.ResponseWriter, r *http.Request) {
 	var credentials struct {
@@ -229,11 +254,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "OTP sent to your email.",
 	})
-}
-// Генерация случайного кода
-func generateVerificationCode() string {
-	rand.Seed(uint64(time.Now().UnixNano())) // Инициализация генератора случайных чисел
-    return fmt.Sprintf("%04d", rand.Intn(10000)) // Генерация кода из 4 цифр
 }
 
 // Проверка OTP для входа
@@ -286,37 +306,76 @@ func generateToken(user User) (string, error) {
 	return token.SignedString([]byte("t/PsFMLt6kqMC4WKEpXbTxuysx1bolhhi2rshUJXttE="))
 }
 
-// Отправка Email
-func sendEmail(to, subject, message string) {
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
-	auth := smtp.PlainAuth("", "mirasbeyse@gmail.com", "fhqj slmp jexj vkrf", smtpHost)
-
-	msg := fmt.Sprintf("From: mirasbeyse@gmail.com\nTo: %s\nSubject: %s\n\n%s", to, subject, message)
-	smtp.SendMail(smtpHost+":"+smtpPort, auth, "mirasbeyse@gmail.com", []string{to}, []byte(msg))
+// Проверка токена
+func validateToken(tokenString string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Проверка алгоритма подписи
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte("t/PsFMLt6kqMC4WKEpXbTxuysx1bolhhi2rshUJXttE="), nil
+	})
+	return token, err
 }
 
-func rateLimitMiddleware(next http.Handler) http.Handler {
+// Middleware для защиты
+func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !limiter.Allow() {
-			http.Error(w, `{"error":"rate limit exceeded"}`, http.StatusTooManyRequests)
-			logrus.Error("Rate limit exceeded")
+		// Получаем токен из заголовков
+		tokenString := r.Header.Get("Authorization")
+		if tokenString == "" {
+			http.Error(w, "Missing token", http.StatusUnauthorized)
 			return
 		}
+
+		// Удаляем "Bearer " из заголовка токена
+		tokenString = tokenString[7:]
+
+		token, err := validateToken(tokenString)
+		if err != nil || !token.Valid {
+			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		// Извлекаем роль из токена
+		claims := token.Claims.(jwt.MapClaims)
+		role := claims["role"].(string)
+
+		// Пример ограничения доступа для определенной роли (например, только для администраторов)
+		if role != "Admin" {
+			http.Error(w, "Access denied", http.StatusForbidden)
+			return
+		}
+
+		// Даем доступ к следующему хендлеру
 		next.ServeHTTP(w, r)
 	})
 }
 
-// Запуск сервера
+// Обработчик для админов
+func adminHandler(w http.ResponseWriter, r *http.Request) {
+	// Логика для админов, например, доступ к панели управления.
+	json.NewEncoder(w).Encode(map[string]string{"message": "Welcome to the Admin panel"})
+}
+
+// Главная функция, запуск сервера
 func main() {
 	initDatabase()
 	mux := http.NewServeMux()
+
+	// Обработчики для публичных маршрутов
 	mux.HandleFunc("/signup", signUpHandler)
 	mux.HandleFunc("/verify-code", verifyCode)
 	mux.HandleFunc("/login", login)
 	mux.HandleFunc("/verify-otp", verifyOTP)
 
+	// Защищенные маршруты, требующие авторизации и проверки роли
+	mux.Handle("/admin", authMiddleware(http.HandlerFunc(adminHandler))) // Административный интерфейс
+
+	// Применяем rate limiting middleware и CORS
 	handler := rateLimitMiddleware(cors.Default().Handler(mux))
+
+	// Запуск сервера на порту 8080
 	fmt.Println("Server running on http://localhost:8080")
 	http.ListenAndServe(":8080", handler)
 }

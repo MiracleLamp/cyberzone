@@ -111,10 +111,11 @@
           <span class="fs-4">VIP ROOMS</span>
         </a>
         <nav class="d-flex gap-3">
-          <a href="main.html" class="text-decoration-none">Home</a>
+          <a href="main.html" class="text-decoration-none" id="home-link">Home</a> <!-- Change link to user.html after login -->
           <a href="prices.html" class="text-decoration-none">Price</a>
           <a href="devices.html" class="text-decoration-none">Devices</a>
           <a href="contact.html" class="text-decoration-none">Contact</a>
+          <a href="users_chek.html" class="text-decoration-none" id="users-link">Users</a> <!-- Users link for everyone, but restricted access -->
         </nav>
       </div>
     </header>
@@ -301,7 +302,36 @@
         <li class="nav-item"><a href="https://2gis.kz/astana/search/Brothers%2C%20компьютерный%20клуб/firm/70000001037713195/71.442558%2C51.094322" class="nav-link px-2 text-body-secondary">2Gis</a></li>
       </p>
     </footer>
+    <script>
+      // Функция для проверки авторизации пользователя
+      function checkLoginStatus() {
+        const token = localStorage.getItem("auth_token");
+
+        if (token) {
+          const decoded = JSON.parse(atob(token.split('.')[1]));
+          document.getElementById("home-link").href = "user.html"; // Change home link to user page after login
+          document.getElementById("users-link").style.display = decoded.role === "Admin" ? "inline" : "none"; // Show Users link only for admins
+        }
+      }
+
+      window.onload = checkLoginStatus;
+    
+      // Добавляем обработчик на кнопку "Book Now"
+      const bookButtons = document.querySelectorAll(".btn-outline-primary");
+      bookButtons.forEach(button => {
+        button.addEventListener("click", function() {
+          if (checkLoginStatus()) {
+            // Если пользователь авторизован, можем продолжить бронирование
+            alert("Booking confirmed!");
+            // Здесь можно добавить дальнейшую логику бронирования
+          }
+        });
+      });
+    </script>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+
+
