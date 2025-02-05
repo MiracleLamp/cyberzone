@@ -1108,3 +1108,173 @@
   "level": "info",
   "message": "Login successful for: jwtuser@example.com"
 }
+{
+  "timestamp": "2025-02-05T14:33:49.529979+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:33:49.633161+05:00",
+  "level": "info",
+  "message": "OTP sent to: jwtuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:33:49.633579+05:00",
+  "level": "info",
+  "message": "Login successful for: jwtuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:34:28.979985+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:34:29.084768+05:00",
+  "level": "info",
+  "message": "OTP sent to: jwtuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:34:29.085011+05:00",
+  "level": "info",
+  "message": "Login successful for: jwtuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:42:24.031485+05:00",
+  "level": "info",
+  "message": "OTP sent to: jwtuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:42:24.032929+05:00",
+  "level": "info",
+  "message": "Login successful for: jwtuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:44:16.875172+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:46:06.288167+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T14:58:46.418184+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:02:23.420532+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:04:30.934515+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:06:57.483457+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:08:14.05809+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:10:40.881869+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:14:58.884339+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:17:29.290871+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:21:07.670769+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:22:16.970492+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:22:59.106265+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:23:22.810364+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:25:31.977295+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:27:36.747919+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:28:15.224978+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:28:58.951511+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:29:35.151555+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:35:31.720723+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:36:08.803764+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:37:05.790767+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:38:03.340756+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:42:17.72245+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:43:07.56331+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}
+{
+  "timestamp": "2025-02-05T15:44:23.363114+05:00",
+  "level": "info",
+  "message": "Email verified for: testuser@example.com"
+}

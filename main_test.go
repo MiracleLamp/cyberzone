@@ -2,15 +2,18 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/tebeka/selenium"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	_ "github.com/lib/pq"
 )
 
 func TestGenerateVerificationCode(t *testing.T) {
@@ -74,73 +77,108 @@ func TestVerifyCode(t *testing.T) {
 	}
 }
 
-func TestJWTAuthentication(t *testing.T) {
-    initTestDB() // Тест үшін дерекқорды тазалау
+func TestLoginWithOTP(t *testing.T) {
+	const (
+		chromeDriverPath = "/opt/homebrew/bin/chromedriver" // macOS (Homebrew арқылы орнатылған)
 
-    // 🔹 Тестке арналған пайдаланушы жасау
-    password := "securepassword123"
-    hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-    user := User{
-        Name:     "JWT User",
-        Email:    "jwtuser@example.com",
-        Password: string(hashedPassword),
-        Role:     "User",
-        Verified: true,
-    }
-    db.Create(&user)
+		// Selenium серверінің URL-і
+		seleniumURL = "http://localhost:4444/wd/hub"
 
-    // 🔹 Логин сұранысын жасау (OTP алу үшін)
-    credentials := map[string]string{
-        "email":    "jwtuser@example.com",
-        "password": password,
-    }
+		// Сіздің сайттың негізгі беті
+		baseURL = "http://127.0.0.1:5501/login.html"
 
-    body, _ := json.Marshal(credentials)
-    request, _ := http.NewRequest("POST", "/login", bytes.NewBuffer(body))
-    response := httptest.NewRecorder()
+		// Деректер базасының байланыс жолы
+		dbConnString = "postgres://postgres:postgres@localhost/gaming_club?sslmode=disable"
+	)
 
-    // 🔹 Логин функциясын шақыру
-    login(response, request)
+	// 🔹 ChromeDriver қызметін іске қосу
+	service, err := selenium.NewChromeDriverService(chromeDriverPath, 4444)
+	if err != nil {
+		t.Fatalf("Error starting ChromeDriver: %v", err)
+	}
+	defer service.Stop()
 
-    // 🔹 Деректер базасынан нақты OTP кодын алу
-    var updatedUser User
-    db.Where("email = ?", "jwtuser@example.com").First(&updatedUser)
-    otp := updatedUser.OTP
+	// 🔹 WebDriver параметрлері
+	caps := selenium.Capabilities{"browserName": "chrome"}
+	wd, err := selenium.NewRemote(caps, seleniumURL)
+	if err != nil {
+		t.Fatalf("Error connecting to WebDriver: %v", err)
+	}
+	defer wd.Quit()
 
-    if otp == "" {
-        t.Fatalf("OTP not found in database")
-    }
+	// 🔹 Басты бетті жүктеу
+	if err := wd.Get(baseURL); err != nil {
+		t.Fatalf("Failed to load page: %v", err)
+	}
 
-    // 🔹 OTP-ді верификациялау
-    otpData := map[string]string{
-        "email": "jwtuser@example.com",
-        "otp":   otp,
-    }
+	// 🔹 Логин батырмасын табу және басу
+	loginLink, err := wd.FindElement(selenium.ByID, "loginButton")
+	if err != nil {
+		t.Fatalf("Login link not found: %v", err)
+	}
+	loginLink.Click()
+	time.Sleep(2 * time.Second) // Модаль жүктелгенше күту
 
-    otpBody, _ := json.Marshal(otpData)
-    otpRequest, _ := http.NewRequest("POST", "/verify-otp", bytes.NewBuffer(otpBody))
-    otpResponse := httptest.NewRecorder()
+	// 🔹 Email енгізу
+	email, err := wd.FindElement(selenium.ByID, "email")
+	if err != nil {
+		t.Fatalf("Email input not found: %v", err)
+	}
+	email.SendKeys("nurbibirahmanberdy@gmail.com")
 
-    // 🔹 OTP функциясын тексеру
-    verifyOTP(otpResponse, otpRequest)
+	// 🔹 Құпия сөз енгізу
+	password, err := wd.FindElement(selenium.ByID, "password")
+	if err != nil {
+		t.Fatalf("Password input not found: %v", err)
+	}
+	password.SendKeys("123")
 
-    // 🔹 Тексеру: HTTP статус коды 200 болу керек
-    if otpResponse.Code != http.StatusOK {
-        t.Errorf("Expected status code 200, got: %d", otpResponse.Code)
-    }
+	// 🔹 Логин батырмасын басу
+	loginButton, err := wd.FindElement(selenium.ByID, "loginButton")
+	if err != nil {
+		t.Fatalf("Login button not found: %v", err)
+	}
+	loginButton.Click()
 
-    // 🔹 Жауаптың ішінде JWT токен бар екенін тексеру
-    var verifyResponse map[string]string
-    json.NewDecoder(otpResponse.Body).Decode(&verifyResponse)
+	time.Sleep(3 * time.Second) // OTP кодын генерациялау үшін күту
 
-    token, exists := verifyResponse["token"]
-    if !exists || token == "" {
-        t.Errorf("JWT token not found in response")
-    }
+	// 🔹 Деректер базасынан OTP кодын алу
+	db, err := sql.Open("postgres", dbConnString)
+	if err != nil {
+		t.Fatalf("Failed to connect to DB: %v", err)
+	}
+	defer db.Close()
 
-    // 🔹 Токенді валидациялау
-    parsedToken, err := validateToken(token)
-    if err != nil || !parsedToken.Valid {
-        t.Errorf("Invalid JWT token")
-    }
+	var otp string
+	query := "SELECT otp FROM users WHERE email = $1 AND otp IS NOT NULL"
+	err = db.QueryRow(query, "nurbibirahmanberdy@gmail.com").Scan(&otp)
+	if err != nil {
+		t.Fatalf("Failed to fetch OTP: %v", err)
+	}
+
+	// WebDriver үшін күтуді анықтау
+wd.SetImplicitWaitTimeout(10 * time.Second)
+
+// OTP өрісін күту
+otpInput, err := wd.FindElement(selenium.ByID, "otpinput")
+if err != nil {
+	t.Fatalf("OTP input field not found: %v", err)
+}
+otpInput.SendKeys(otp)
+
+// OTP батырмасын күту
+verifyButton, err := wd.FindElement(selenium.ByID, "otp")
+if err != nil {
+	t.Fatalf("Verify button not found: %v", err)
+}
+verifyButton.Click()
+
+// Профиль сілтемесінің бар-жоғын күту
+if _, err := wd.FindElement(selenium.ByLinkText, "Profile"); err != nil {
+	t.Fatalf("Profile link not found after login: %v", err)
+}
+
+t.Log("Login successful with OTP!")
+
+
 }
