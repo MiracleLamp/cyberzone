@@ -75,7 +75,7 @@ func writeLogToFile(level, message string) {
 
 // Подключение к базе данных
 func initDatabase() {
-	dsn := "postgres://postgres:postgres@localhost/gaming_club?sslmode=disable"
+	dsn := "postgresql://database_awk3_user:IYA0ZWH9esDfERi5J4uwOdNEWMy8Q5Sh@dpg-cuhmm01u0jms73ac6e3g-a.oregon-postgres.render.com/database_awk3"
 	var err error
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
